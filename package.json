@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-three/drei": "^9.117.3",
     "@react-three/fiber": "^8.17.10",
+    "@types/uuid": "^10.0.0",
     "biome": "^0.3.3",
     "clsx": "^2.1.1",
     "motion": "^11.16.0",
@@ -19,7 +20,8 @@
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
     "tailwind-merge": "^2.6.0",
-    "three": "^0.170.0"
+    "three": "^0.170.0",
+    "uuid": "^11.0.4"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
