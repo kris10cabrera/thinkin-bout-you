@@ -32,18 +32,35 @@ const generateFloatParams = (
 
   return {
     speed: baseSpeed,
-    amplitude: [baseAmplitude, baseAmplitude * 1.2, baseAmplitude * 0.8] as [
-      number,
-      number,
-      number
-    ],
-    rotationRange: [baseRotation, baseRotation * 0.8, baseRotation * 0.5] as [
-      number,
-      number,
-      number
-    ],
+    amplitude: [baseAmplitude, baseAmplitude * 1.2, baseAmplitude * 0.8],
+    rotationRange: [baseRotation, baseRotation * 0.8, baseRotation * 0.5],
     timeOffset: index * 2
   }
+}
+
+interface Position {
+  xPos: number
+  yPos: number
+}
+
+const generateDeterministicPositions = (count: number): Position[] => {
+  const positions: Position[] = []
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5)) // Golden angle for better distribution
+
+  for (let i = 0; i < count; i++) {
+    const angle = goldenAngle * i
+
+    // Use index-based distance calculation instead of random
+    const distancePercent = 10 + (i % 3) * 10 + Math.floor(i / 3) * 5
+    const distance = Math.min(distancePercent, 30) // Cap at 40% from center
+
+    const xPos = 50 + Math.cos(angle) * distance
+    const yPos = 50 + Math.sin(angle) * distance
+
+    positions.push({ xPos, yPos })
+  }
+
+  return positions
 }
 
 const Chamber = () => {
@@ -52,44 +69,40 @@ const Chamber = () => {
     []
   )
 
+  const positions = useMemo(
+    () => generateDeterministicPositions(heartImages.length),
+    []
+  )
+
   return (
-    <div className="absolute left-0 top-0 w-screen h-screen overflow-hidden ">
-      {heartImages.map((image, index) => {
-        // Generate a random angle and distance from center
-        const angle = Math.random() * Math.PI * 2
-        const distance = Math.random() * 30 + 10 // Random distance between 10-40% from center
-
-        const xPos = 50 + Math.cos(angle) * distance
-        const yPos = 50 + Math.sin(angle) * distance
-
-        // TODO: add loading heart
-        return (
-          <div
-            key={image}
-            className="absolute"
-            style={{
-              left: `${xPos}%`,
-              top: `${yPos}%`,
-              transform: "translate(-50%, -50%)"
-            }}
+    <div className="absolute left-0 top-0 w-screen h-screen overflow-hidden pointer-events-none">
+      {heartImages.map((image, index) => (
+        <div
+          key={image}
+          className="absolute"
+          style={{
+            left: `${positions[index].xPos}%`,
+            top: `${positions[index].yPos}%`,
+            transform: "translate(-50%, -50%)"
+          }}
+        >
+          <Float
+            {...floatParams[index]}
+            className="flex items-center justify-center"
           >
-            <Float
-              {...floatParams[index]}
-              className="flex items-center justify-center"
-            >
-              <div className="relative w-32 h-32">
-                <Image
-                  src={`/${image}`}
-                  alt={image.replace("-heart.png", "")}
-                  fill
-                  sizes="200px"
-                  className="object-contain"
-                />
-              </div>
-            </Float>
-          </div>
-        )
-      })}
+            <div className="relative w-28 h-28">
+              <Image
+                src={`/${image}`}
+                alt={image.replace("-heart.png", "")}
+                fill
+                sizes="100px"
+                className="object-contain"
+                priority={index < 4}
+              />
+            </div>
+          </Float>
+        </div>
+      ))}
     </div>
   )
 }

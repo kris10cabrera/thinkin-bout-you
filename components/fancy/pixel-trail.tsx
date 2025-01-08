@@ -76,7 +76,7 @@ const PixelTrail = ({
     <div
       ref={containerRef}
       className={cn(
-        "absolute inset-0 w-full h-full pointer-events-auto",
+        "absolute inset-0 w-full h-full pointer-events-none ",
         className
       )}
       onMouseMove={handleMouseMove}
