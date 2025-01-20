@@ -15,22 +15,21 @@ interface Dimensions {
   height: number
 }
 
-const PixelTrail = ({
+export default function PixelTrail({
   pixelSize = 20,
   fadeDuration = 500,
   delay = 0,
   className,
   pixelClassName
-}: PixelTrailProps) => {
+}: PixelTrailProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [dimensions, setDimensions] = useState<Dimensions>({
-    width: 0,
-    height: 0
-  })
-  const [isClient, setIsClient] = useState(false)
 
+  // Initialize with null to prevent hydration mismatch
+  const [dimensions, setDimensions] = useState<Dimensions | null>(null)
+
+  // Use useEffect to handle all client-side operations
   useEffect(() => {
-    setIsClient(true)
+    // Initial dimensions update
     const updateDimensions = () => {
       if (containerRef.current) {
         setDimensions({
@@ -40,8 +39,13 @@ const PixelTrail = ({
       }
     }
 
+    // Run initial update
     updateDimensions()
+
+    // Set up resize listener
     window.addEventListener("resize", updateDimensions)
+
+    // Cleanup
     return () => window.removeEventListener("resize", updateDimensions)
   }, [])
 
@@ -62,26 +66,24 @@ const PixelTrail = ({
     [pixelSize]
   )
 
+  // Only calculate grid when dimensions are available
   const columns = useMemo(
-    () => Math.ceil(dimensions.width / pixelSize),
-    [dimensions.width, pixelSize]
+    () => (dimensions ? Math.ceil(dimensions.width / pixelSize) : 0),
+    [dimensions, pixelSize]
   )
 
   const rows = useMemo(
-    () => Math.ceil(dimensions.height / pixelSize),
-    [dimensions.height, pixelSize]
+    () => (dimensions ? Math.ceil(dimensions.height / pixelSize) : 0),
+    [dimensions, pixelSize]
   )
 
   return (
     <div
       ref={containerRef}
-      className={cn(
-        "absolute inset-0 w-full h-full pointer-events-none ",
-        className
-      )}
+      className={cn("absolute inset-0 w-full h-full z-40", className)}
       onMouseMove={handleMouseMove}
     >
-      {isClient && dimensions.width > 0 && dimensions.height > 0 && (
+      {dimensions && (
         <div className="relative w-full h-full">
           {Array.from({ length: rows }).map((_, rowIndex) => (
             <div key={rowIndex} className="flex">
@@ -111,13 +113,7 @@ interface PixelDotProps {
   className?: string
 }
 
-const PixelDot = ({
-  id,
-  size,
-  fadeDuration,
-  delay,
-  className
-}: PixelDotProps) => {
+function PixelDot({ id, size, fadeDuration, delay, className }: PixelDotProps) {
   const controls = useAnimationControls()
 
   const animatePixel = useCallback(() => {
@@ -140,7 +136,7 @@ const PixelDot = ({
     <motion.div
       id={id}
       ref={ref}
-      className={cn("cursor-pointer-none", className)}
+      className={cn("bg-light_pink", className)}
       style={{
         width: `${size}px`,
         height: `${size}px`
@@ -150,5 +146,3 @@ const PixelDot = ({
     />
   )
 }
-
-export default PixelTrail
