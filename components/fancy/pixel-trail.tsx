@@ -4,8 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 interface PixelTrailProps {
   pixelSize: number
-  fadeDuration?: number
-  delay?: number
   className?: string
   pixelClassName?: string
 }
@@ -17,19 +15,14 @@ interface Dimensions {
 
 export default function PixelTrail({
   pixelSize = 20,
-  fadeDuration = 500,
-  delay = 0,
   className,
   pixelClassName
 }: PixelTrailProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-
-  // Initialize with null to prevent hydration mismatch
+  const lastActivationRef = useRef<{ [key: string]: number }>({})
   const [dimensions, setDimensions] = useState<Dimensions | null>(null)
 
-  // Use useEffect to handle all client-side operations
   useEffect(() => {
-    // Initial dimensions update
     const updateDimensions = () => {
       if (containerRef.current) {
         setDimensions({
@@ -39,13 +32,8 @@ export default function PixelTrail({
       }
     }
 
-    // Run initial update
     updateDimensions()
-
-    // Set up resize listener
     window.addEventListener("resize", updateDimensions)
-
-    // Cleanup
     return () => window.removeEventListener("resize", updateDimensions)
   }, [])
 
@@ -57,16 +45,24 @@ export default function PixelTrail({
       const x = Math.floor((e.clientX - rect.left) / pixelSize)
       const y = Math.floor((e.clientY - rect.top) / pixelSize)
 
-      const pixelElement = document.getElementById(`pixel-${x}-${y}`)
-      if (pixelElement) {
-        const animatePixel = (pixelElement as any).__animatePixel
-        if (animatePixel) animatePixel()
+      const pixelKey = `${x}-${y}`
+      const now = Date.now()
+      const lastActivation = lastActivationRef.current[pixelKey] || 0
+
+      if (now - lastActivation > 100) {
+        const pixelElement = document.getElementById(`pixel-${x}-${y}`)
+        if (pixelElement) {
+          const animatePixel = (pixelElement as any).__animatePixel
+          if (animatePixel) {
+            animatePixel()
+            lastActivationRef.current[pixelKey] = now
+          }
+        }
       }
     },
     [pixelSize]
   )
 
-  // Only calculate grid when dimensions are available
   const columns = useMemo(
     () => (dimensions ? Math.ceil(dimensions.width / pixelSize) : 0),
     [dimensions, pixelSize]
@@ -92,8 +88,6 @@ export default function PixelTrail({
                   key={`${colIndex}-${rowIndex}`}
                   id={`pixel-${colIndex}-${rowIndex}`}
                   size={pixelSize}
-                  fadeDuration={fadeDuration}
-                  delay={delay}
                   className={pixelClassName}
                 />
               ))}
@@ -108,20 +102,38 @@ export default function PixelTrail({
 interface PixelDotProps {
   id: string
   size: number
-  fadeDuration: number
-  delay: number
   className?: string
 }
 
-function PixelDot({ id, size, fadeDuration, delay, className }: PixelDotProps) {
+function PixelDot({ id, size, className }: PixelDotProps) {
   const controls = useAnimationControls()
+  const timeoutRef = useRef<NodeJS.Timeout>()
 
   const animatePixel = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+
     controls.start({
-      opacity: [1, 0],
-      transition: { duration: fadeDuration / 1000, delay: delay / 1000 }
+      opacity: 1,
+      transition: { duration: 0 }
     })
-  }, [controls, fadeDuration, delay])
+
+    timeoutRef.current = setTimeout(() => {
+      controls.start({
+        opacity: 0,
+        transition: { duration: 0.5 }
+      })
+    }, 3000)
+  }, [controls])
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   const ref = useCallback(
     (node: HTMLDivElement | null) => {

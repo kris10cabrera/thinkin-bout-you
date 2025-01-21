@@ -32,12 +32,7 @@ export default function Home() {
           className="object-contain heart big-heart ml-auto"
         />
         <Chamber />
-        <PixelTrail
-          pixelSize={16}
-          delay={130}
-          fadeDuration={0}
-          pixelClassName="bg-light_pink"
-        />
+        <PixelTrail pixelSize={16} pixelClassName="bg-light_pink" />
       </main>
     </div>
   )
