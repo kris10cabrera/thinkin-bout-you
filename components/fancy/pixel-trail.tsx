@@ -13,6 +13,9 @@ interface Dimensions {
   height: number
 }
 
+const PIXELS_TO_KEEP = 100
+const lastActivatedPixels = new Set<string>()
+
 export default function PixelTrail({
   pixelSize = 20,
   className,
@@ -24,12 +27,10 @@ export default function PixelTrail({
 
   useEffect(() => {
     const updateDimensions = () => {
-      if (containerRef.current) {
-        setDimensions({
-          width: containerRef.current.offsetWidth,
-          height: containerRef.current.offsetHeight
-        })
-      }
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+      })
     }
 
     updateDimensions()
@@ -50,6 +51,18 @@ export default function PixelTrail({
       const lastActivation = lastActivationRef.current[pixelKey] || 0
 
       if (now - lastActivation > 100) {
+        lastActivatedPixels.add(pixelKey)
+        if (lastActivatedPixels.size > PIXELS_TO_KEEP) {
+          const firstKey = lastActivatedPixels.values().next().value
+          lastActivatedPixels.delete(firstKey)
+          // Trigger fade out for the removed pixel
+          const oldPixelElement = document.getElementById(`pixel-${firstKey}`)
+          if (oldPixelElement) {
+            const fadeOutPixel = (oldPixelElement as any).__fadeOutPixel
+            if (fadeOutPixel) fadeOutPixel()
+          }
+        }
+
         const pixelElement = document.getElementById(`pixel-${x}-${y}`)
         if (pixelElement) {
           const animatePixel = (pixelElement as any).__animatePixel
@@ -76,7 +89,10 @@ export default function PixelTrail({
   return (
     <div
       ref={containerRef}
-      className={cn("absolute inset-0 w-full h-full z-40", className)}
+      className={cn(
+        "fixed top-0 bottom-0 left-0 right-0 w-full h-full z-30",
+        className
+      )}
       onMouseMove={handleMouseMove}
     >
       {dimensions && (
@@ -89,6 +105,7 @@ export default function PixelTrail({
                   id={`pixel-${colIndex}-${rowIndex}`}
                   size={pixelSize}
                   className={pixelClassName}
+                  pixelKey={`${colIndex}-${rowIndex}`}
                 />
               ))}
             </div>
@@ -103,45 +120,43 @@ interface PixelDotProps {
   id: string
   size: number
   className?: string
+  pixelKey: string
 }
 
-function PixelDot({ id, size, className }: PixelDotProps) {
+function PixelDot({ id, size, className, pixelKey }: PixelDotProps) {
   const controls = useAnimationControls()
-  const timeoutRef = useRef<NodeJS.Timeout>()
 
   const animatePixel = useCallback(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-    }
-
     controls.start({
       opacity: 1,
       transition: { duration: 0 }
     })
+  }, [controls])
 
-    timeoutRef.current = setTimeout(() => {
-      controls.start({
-        opacity: 0,
-        transition: { duration: 0.5 }
-      })
-    }, 3000)
+  const fadeOutPixel = useCallback(() => {
+    controls.start({
+      opacity: 0,
+      transition: { duration: 0.5 }
+    })
   }, [controls])
 
   useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
+    if (lastActivatedPixels.has(pixelKey)) {
+      controls.start({
+        opacity: 1,
+        transition: { duration: 0 }
+      })
     }
-  }, [])
+  }, [controls, pixelKey])
 
   const ref = useCallback(
     (node: HTMLDivElement | null) => {
       if (node) {
         ;(node as any).__animatePixel = animatePixel
+        ;(node as any).__fadeOutPixel = fadeOutPixel
       }
     },
-    [animatePixel]
+    [animatePixel, fadeOutPixel]
   )
 
   return (

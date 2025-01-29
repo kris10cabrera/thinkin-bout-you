@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #4e5057;
+  --background: #fff;
   --foreground: #fff;
 }
 
@@ -13,16 +13,26 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.big-heart {
-  max-width: 600px;
+.text {
+  display: inline-block;
 }
 
-.text {
-  background: gray;
-  display: inline-block;
-  background: #4e505782;
-  z-index: 40;
-  position: relative;
-  border-radius: 30px;
-  max-width: 570px;
+@keyframes fadeScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-scale {
+  animation: fadeScale 400ms ease-out;
+  will-change: transform, opacity;
+}
+
+.skew {
+  transform: skewY(-5deg);
 }

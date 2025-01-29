@@ -21,7 +21,8 @@
     "react-dom": "19.0.0-rc-02c0e824-20241028",
     "tailwind-merge": "^2.6.0",
     "three": "^0.170.0",
-    "uuid": "^11.0.4"
+    "uuid": "^11.0.4",
+    "viem": "^2.22.16"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
