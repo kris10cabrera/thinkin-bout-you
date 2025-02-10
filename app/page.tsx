@@ -20,7 +20,7 @@ export default function Home() {
             <p className="z-40 relative leading-none text-base skew-x-5 pl-3 pt-4">
               (it's like carving your names in a tree)
             </p>
-            <p className="z-40 relative mt-8 leading-none text-3xl max-w-[40ch]">
+            <p className="z-40 relative my-8 leading-none text-3xl max-w-[40ch]">
               accepting 333 crushes total
             </p>
           </div>
