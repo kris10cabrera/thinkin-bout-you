@@ -21,7 +21,7 @@ const config: Config = {
       fontFamily: {
         times: ["Times New Roman", "serif"],
         tram: ["var(--font-tram)"],
-
+        goozette: ["var(--font-goozette)"],
         scorpius: ["var(--font-scorpius)"],
         "kosugi-maru": ["var(--font-kosugi-maru)"]
       }
