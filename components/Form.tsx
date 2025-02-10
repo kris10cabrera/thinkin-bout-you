@@ -58,7 +58,7 @@ export default function Form() {
   return (
     <div className="flex flex-col gap-2 items-start">
       <section className="inline-flex flex-col items-start gap-2 text-black border border-black relative mt-30 z-40 rounded-lg p-2">
-        <label htmlFor="initials ">you + your crush's initials:</label>
+        <label htmlFor="initials">you + your crush's initials:</label>
         <div className="inline-flex flex-row gap-2">
           <input
             id="initials"
