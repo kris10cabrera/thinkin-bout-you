@@ -13,17 +13,17 @@ export default function Home() {
       <main className="">
         <div className="text">
           <div className="">
-            <h1 className=" z-40 relative font-tram inline-block text-[20vw] pointer-events-none leading-none">
+            <h1 className="bg-gradient z-40 relative font-tram inline-block text-[20vw] pointer-events-none leading-none">
               are you in love?
             </h1>
-            <p className=" z-40 relative leading-none text-[6vw] pt-3 max-w-[40ch]  pointer-events-none">
+            <p className="bg-gradient z-40 relative leading-none text-[6vw] pt-3 max-w-[40ch]  pointer-events-none">
               carve your names into this website to celebrate your love,
               forever.
             </p>
             <p className="z-40 relative leading-none text-base skew-x-5 pl-3 pt-4">
               (pretend you are carving your names in a tree)
             </p>
-            <p className="z-40 relative my-8 leading-none text-3xl max-w-[40ch]">
+            <p className="bg-gradient z-40 relative my-8 leading-none text-3xl max-w-[40ch]">
               accepting 333 crushes total
             </p>
           </div>
