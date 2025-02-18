@@ -65,3 +65,28 @@ export function useGetCrushCount() {
     }
   })
 }
+
+export function useGetCrushes() {
+  return useQuery({
+    queryKey: ["crushes"],
+    queryFn: async () => {
+      const crushCount = await readContract(publicClient, {
+        address: CONTRACT_ADDRESS,
+        abi,
+        functionName: "getCrushCount",
+        args: []
+      })
+      const crushes = await Promise.all(
+        Array.from({ length: Number(crushCount) }, (_, index) =>
+          readContract(publicClient, {
+            address: CONTRACT_ADDRESS,
+            abi,
+            functionName: "getCrush",
+            args: [BigInt(index)]
+          })
+        )
+      )
+      return crushes
+    }
+  })
+}

@@ -3,11 +3,13 @@
 import Form from "@/components/Form"
 import Chamber from "@/components/chamber"
 import PixelTrail from "@/components/fancy/pixel-trail"
-import { useGetCrushCount } from "@/lib/hooks"
+import { useGetCrushCount, useGetCrushes } from "@/lib/hooks"
 
 export default function Home() {
   const crushCountData = useGetCrushCount()
+  const crushesData = useGetCrushes()
   const crushCount = crushCountData.data
+  console.log(crushesData.data)
   return (
     <div className="font-kosugi-maru min-h-screen p-8 pb-20 gap-16 px-4 sm:pt-10 text-black">
       <main className="">
@@ -32,6 +34,17 @@ export default function Home() {
             _{crushCount} crushes recorded
           </p>
           <p>_accepting crushes since</p>
+        </div>
+        <div className="flex flex-row flex-wrap gap-2">
+          {crushesData.data?.map((crush, index) => (
+            <div
+              key={index}
+              className="relative z-30 bg-white p-2 rounded-lg uppercase"
+            >
+              <span className="text-8xl font-tram"> {crush}</span>
+              <span className="text-sm">_forever</span>
+            </div>
+          ))}
         </div>
         <div className="fixed inset-0 w-screen h-screen">
           <Chamber />
