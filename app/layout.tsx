@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Kosugi_Maru } from "next/font/google"
 import localFont from "next/font/local"
 import "./globals.css"
+import Providers from "./providers"
 
 const scorpius = localFont({
   src: "./fonts/Scorpius.woff",
@@ -35,18 +36,20 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preload" as="image" href="/beach-heart.png" />
-        <link rel="preload" as="image" href="/woods-heart.png" />
-        <link rel="preload" as="image" href="/berlin1-heart.png" />
-        <link rel="preload" as="image" href="/berlin-heart.png" />
-      </head>
-      <body
-        className={`${scorpius.variable} ${tram.variable} ${kosugiMaru.variable} ${goozette.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <Providers>
+      <html lang="en">
+        <head>
+          <link rel="preload" as="image" href="/beach-heart.png" />
+          <link rel="preload" as="image" href="/woods-heart.png" />
+          <link rel="preload" as="image" href="/berlin1-heart.png" />
+          <link rel="preload" as="image" href="/berlin-heart.png" />
+        </head>
+        <body
+          className={`${scorpius.variable} ${tram.variable} ${kosugiMaru.variable} ${goozette.variable} antialiased`}
+        >
+          {children}
+        </body>
+      </html>
+    </Providers>
   )
 }

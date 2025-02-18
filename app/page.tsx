@@ -3,8 +3,11 @@
 import Form from "@/components/Form"
 import Chamber from "@/components/chamber"
 import PixelTrail from "@/components/fancy/pixel-trail"
+import { useGetCrushCount } from "@/lib/hooks"
 
 export default function Home() {
+  const crushCountData = useGetCrushCount()
+  const crushCount = crushCountData.data
   return (
     <div className="font-kosugi-maru min-h-screen p-8 pb-20 gap-16 px-4 sm:pt-10 text-black">
       <main className="">
@@ -18,13 +21,17 @@ export default function Home() {
               forever.
             </p>
             <p className="z-40 relative leading-none text-base skew-x-5 pl-3 pt-4">
-              (it's like carving your names in a tree)
+              (pretend you are carving your names in a tree)
             </p>
             <p className="z-40 relative my-8 leading-none text-3xl max-w-[40ch]">
               accepting 333 crushes total
             </p>
           </div>
           <Form />
+          <p className="text-2xl mt-4 font-kosugiMari z-50 relative ">
+            _{crushCount} crushes recorded
+          </p>
+          <p>_accepting crushes since</p>
         </div>
         <div className="fixed inset-0 w-screen h-screen">
           <Chamber />
