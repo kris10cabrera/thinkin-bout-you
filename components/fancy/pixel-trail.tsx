@@ -53,14 +53,16 @@ export default function PixelTrail({
       if (now - lastActivation > 100) {
         lastActivatedPixels.add(pixelKey)
         if (lastActivatedPixels.size > PIXELS_TO_KEEP) {
-          const firstKey = lastActivatedPixels.values().next().value
-          lastActivatedPixels.delete(firstKey)
-          // Trigger fade out for the removed pixel
-          const oldPixelElement = document.getElementById(`pixel-${firstKey}`)
-          if (oldPixelElement) {
+        const firstKey = lastActivatedPixels.values().next().value
+        if (firstKey !== undefined) {
+            lastActivatedPixels.delete(firstKey)
+            // Trigger fade out for the removed pixel
+            const oldPixelElement = document.getElementById(`pixel-${firstKey}`)
+            if (oldPixelElement) {
             const fadeOutPixel = (oldPixelElement as any).__fadeOutPixel
             if (fadeOutPixel) fadeOutPixel()
-          }
+            }
+        }
         }
 
         const pixelElement = document.getElementById(`pixel-${x}-${y}`)
