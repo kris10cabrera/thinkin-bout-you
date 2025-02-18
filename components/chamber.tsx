@@ -3,6 +3,7 @@ import Image, { type StaticImageData } from "next/image"
 import { useEffect, useMemo, useState } from "react"
 import Float from "./fancy/float"
 
+import { positions } from "@/lib/utils"
 import AraucariaHeart from "../public/araucaria-heart.png"
 import BathroomHeart from "../public/bathroom-heart.png"
 // Static imports for all heart images
@@ -107,40 +108,6 @@ const generateFloatParams = (index: number) => {
   }
 }
 
-interface Position {
-  xPos: number
-  yPos: number
-}
-
-const generateDeterministicPosition = (
-  index: number,
-  total: number
-): Position => {
-  const centerX = 50 // Center horizontally
-  // Increased spacing by reducing number of items per column
-  const verticalSpacing = 140 / total // Increased from 70 to 140 for more spacing
-  const yPos = 5 + verticalSpacing * index // Start at 5% from top
-
-  // Add slight horizontal variation
-  const horizontalJitter = 1
-  const jitterX = (((index * 31) % 100) / 100 - 0.5) * horizontalJitter
-
-  return {
-    xPos: Math.max(15, Math.min(85, centerX + jitterX)),
-    yPos: Math.max(5, Math.min(95, yPos))
-  }
-}
-
-const generateVerticalPositions = (count: number): Position[] => {
-  const positions: Position[] = []
-
-  for (let i = 0; i < count; i++) {
-    positions.push(generateDeterministicPosition(i, count))
-  }
-
-  return positions
-}
-
 export default function Chamber() {
   const [mounted, setMounted] = useState(false)
   const [shuffledHearts, setShuffledHearts] = useState<HeartImage[]>([])
@@ -164,32 +131,24 @@ export default function Chamber() {
     []
   )
 
-  const positions = useMemo(
-    () => generateVerticalPositions(heartImages.length),
-    []
-  )
-
   if (!mounted) {
     return null
   }
 
   return (
-    <div className="absolute inset-0">
-      <div className="absolute left-1/2 -translate-x-1/2 h-full w-full">
+    <div className="inset-0">
+      <div className=" heartheart flex flex-wrap flex-row  h-full w-full">
         {shuffledHearts.map((image, index) => (
           <div
             key={image.name}
-            className="absolute"
             style={{
+              position: "absolute",
               left: `${positions[index].xPos}%`,
               top: `${positions[index].yPos}%`,
               transform: "translate(-50%, -50%)"
             }}
           >
-            <Float
-              {...floatParams[index]}
-              className="flex items-center justify-center"
-            >
+            <Float {...floatParams[index]} className="">
               <div className="relative size-44">
                 <Image
                   src={image.src}
