@@ -57,7 +57,7 @@ export default function Form() {
 
   return (
     <div className="flex flex-col gap-2 items-start">
-      <section className="inline-flex flex-col items-start gap-2 text-black border border-black relative mt-30 z-40 rounded-lg p-2">
+      <section className="inline-flex flex-col items-start gap-2 text-black border border-black backdrop-blur-sm relative mt-30 z-40 rounded-lg p-2">
         <label htmlFor="initials">you + your crush's initials:</label>
         <div className="inline-flex flex-row gap-2">
           <input
@@ -67,7 +67,7 @@ export default function Form() {
             value={initials}
             placeholder="XX"
             onChange={handleInitialsChange}
-            className="block focus-within:outline-none border border-black text-black rounded-lg uppercase p-[0.5] text-3xl tracking-widest w-12 text-center font-bold"
+            className="block focus-within:outline-none border border-black text-red rounded-lg uppercase p-[0.5] text-3xl tracking-widest w-12 text-center font-bold"
           />
 
           <div className="flex flex-row gap-2 items-center">
@@ -92,7 +92,7 @@ export default function Form() {
         </div>
       </section>
       {hasAttemptedSubmit && error && (
-        <span className="text-black mt-1 z-40 relative bg-white text-base">
+        <span className="text-red-600 mt-1 z-40 relative bg-white text-base">
           {error}
         </span>
       )}

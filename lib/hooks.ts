@@ -1,4 +1,8 @@
+import { publicClient } from "@/app/providers"
+import { useQuery } from "@tanstack/react-query"
 import { type RefObject, useEffect, useState } from "react"
+import { readContract } from "viem/actions"
+import { abi } from "./abi"
 
 interface Dimensions {
   width: number
@@ -28,4 +32,36 @@ export function useDimensions(
   }, [ref])
 
   return dimensions
+}
+
+const CONTRACT_ADDRESS = "0x92ffa823b1C167285ee03593FEc67F0aD4dF0fFf"
+
+export function useGetCrush() {
+  return useQuery({
+    queryKey: ["crush"],
+    queryFn: async () => {
+      const data = await readContract(publicClient, {
+        address: CONTRACT_ADDRESS,
+        abi,
+        functionName: "getCrush",
+        args: [BigInt(0)]
+      })
+      return data
+    }
+  })
+}
+
+export function useGetCrushCount() {
+  return useQuery({
+    queryKey: ["crushCount"],
+    queryFn: async () => {
+      const data = await readContract(publicClient, {
+        address: CONTRACT_ADDRESS,
+        abi,
+        functionName: "getCrushCount",
+        args: []
+      })
+      return Number(data)
+    }
+  })
 }
