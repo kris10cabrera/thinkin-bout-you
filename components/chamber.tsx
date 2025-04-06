@@ -1,7 +1,5 @@
-"use client"
 import Image, { type StaticImageData } from "next/image"
-import { useEffect, useMemo, useState } from "react"
-import Float from "./fancy/float"
+import { useEffect, useState } from "react"
 
 import { positions } from "@/lib/utils"
 import AraucariaHeart from "../public/araucaria-heart.png"
@@ -87,30 +85,11 @@ const heartImages: HeartImage[] = [
   { src: RaccoonHeart, name: "raccoon-heart.png" }
 ]
 
-const generateFloatParams = (index: number) => {
-  const baseSpeed = 0.15 + (index % 3) * 0.05
-  const baseAmplitude = 5 + (index % 3) * 2
-  const baseRotation = 3 + (index % 3) * 1.5
-
-  return {
-    speed: baseSpeed,
-    amplitude: [baseAmplitude, baseAmplitude * 0.8, baseAmplitude * 0.6] as [
-      number,
-      number,
-      number
-    ],
-    rotationRange: [baseRotation, baseRotation * 0.6, baseRotation * 0.4] as [
-      number,
-      number,
-      number
-    ],
-    timeOffset: index * 2
-  }
-}
-
 export default function Chamber() {
   const [mounted, setMounted] = useState(false)
   const [shuffledHearts, setShuffledHearts] = useState<HeartImage[]>([])
+  const [loadedCount, setLoadedCount] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const shuffleArray = <T,>(array: T[]): T[] => {
@@ -124,20 +103,49 @@ export default function Chamber() {
 
     setMounted(true)
     setShuffledHearts(shuffleArray(heartImages))
+
+    // Set loading state to false after a short delay if images are taking too long
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 3000)
+
+    return () => clearTimeout(timer)
   }, [])
 
-  const floatParams = useMemo(
-    () => heartImages.map((_, index) => generateFloatParams(index)),
-    []
-  )
+  // Track image loading progress
+  const handleImageLoad = () => {
+    setLoadedCount((prev) => {
+      const newCount = prev + 1
+      // Set loading to false when all images are loaded
+      if (newCount >= heartImages.length) {
+        setIsLoading(false)
+      }
+      return newCount
+    })
+  }
 
   if (!mounted) {
     return null
   }
 
   return (
-    <div className="inset-0">
-      <div className=" heartheart flex flex-wrap flex-row  h-full w-full">
+    <div className="inset-0 h-full w-full">
+      {/* Loading overlay - appears during loading */}
+      {isLoading && (
+        <div className=" inset-0 z-10 flex items-center justify-center bg-background/80">
+          <div className="text-center">
+            <div className="mb-2 h-6 w-6 animate-spin rounded-full border-b-2 border-primary" />
+            <p className="text-muted-foreground">
+              Loading hearts...{" "}
+              {loadedCount > 0
+                ? `${Math.round((loadedCount / heartImages.length) * 100)}%`
+                : ""}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="heartheart flex h-full w-full flex-row flex-wrap">
         {shuffledHearts.map((image, index) => (
           <div
             key={image.name}
@@ -145,25 +153,47 @@ export default function Chamber() {
               position: "absolute",
               left: `${positions[index].xPos}%`,
               top: `${positions[index].yPos}%`,
-              transform: "translate(-50%, -50%)"
+              transform: "translate(-50%, -50%)",
+              opacity: isLoading ? 0 : 1,
+              transition: `opacity 0.5s ease-in-out ${Math.min(index * 50, 1000)}ms`,
+              willChange: "opacity"
             }}
           >
-            <Float {...floatParams[index]} className="">
-              <div className="relative size-44">
-                <Image
-                  src={image.src}
-                  alt={image.name.replace("-heart.png", "")}
-                  fill
-                  sizes="400px"
-                  className="object-contain heart"
-                  placeholder="blur"
-                  priority={index < 4}
-                />
-              </div>
-            </Float>
+            <div className="relative size-[800px]">
+              <Image
+                src={image.src}
+                alt={image.name.replace("-heart.png", "")}
+                fill
+                sizes="(max-width: 768px) 100vw, 400px"
+                className="heart object-contain"
+                placeholder="blur"
+                priority={index < 8} // Mark first 8 images as priority
+                onLoad={handleImageLoad}
+                loading={index < 12 ? "eager" : "lazy"}
+              />
+            </div>
           </div>
         ))}
       </div>
+    </div>
+  )
+}
+
+export function Heart({ className }: { className?: string }) {
+  const randomIndex = Math.floor(Math.random() * heartImages.length)
+
+  return (
+    <div className={className} style={{ position: "relative" }}>
+      <Image
+        src={heartImages[randomIndex].src}
+        alt={heartImages[randomIndex].name}
+        sizes="100px"
+        width={50}
+        height={50}
+        className="heart object-contain"
+        placeholder="blur"
+        priority
+      />
     </div>
   )
 }
