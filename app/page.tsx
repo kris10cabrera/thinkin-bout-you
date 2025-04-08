@@ -52,6 +52,10 @@ export default function Home() {
             <Crush index={index} key={index} crush={crush} />
           ))}
         </div>
+        <p className="bg-gradient z-40 relative leading-none text-3xl pt-32 max-w-[40ch]  pointer-events-none">
+          this website is dedicated to my abuela who cried the first time i
+          showed her one of my websites.
+        </p>
         <PixelTrail pixelSize={16} pixelClassName="bg-light_pink" />
       </main>
     </div>
