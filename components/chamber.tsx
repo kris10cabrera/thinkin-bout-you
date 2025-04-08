@@ -136,7 +136,6 @@ export default function Chamber() {
           <div className="text-center">
             <div className="mb-2 h-6 w-6 animate-spin rounded-full border-b-2 border-primary" />
             <p className="text-muted-foreground">
-              Loading hearts...{" "}
               {loadedCount > 0
                 ? `${Math.round((loadedCount / heartImages.length) * 100)}%`
                 : ""}
