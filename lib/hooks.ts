@@ -86,7 +86,7 @@ export function useGetCrushes() {
           })
         )
       )
-      return crushes
+      return crushes.filter((crush) => crush !== "").reverse()
     }
   })
 }

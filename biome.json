@@ -7,7 +7,8 @@
     "enabled": true,
     "rules": {
       "suspicious": {
-        "noArrayIndexKey": "off"
+        "noArrayIndexKey": "off",
+        "noExplicitAny": "off"
       },
       "correctness": {
         "noUnusedImports": "error"

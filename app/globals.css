@@ -15,6 +15,9 @@ body {
 
 .text {
   display: inline-block;
+  background: radial-gradient(#ffffff5e 10%, transparent 100%);
+  z-index: 1;
+  position: relative;
 }
 
 @keyframes fadeScale {
@@ -39,4 +42,10 @@ body {
 
 .bg-gradient {
   background: radial-gradient(#ffffffab 10%, transparent 68%);
+}
+
+.bg-gradient-outer {
+}
+
+.bg-initial {
 }

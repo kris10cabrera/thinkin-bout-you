@@ -188,8 +188,8 @@ export function Heart({ className }: { className?: string }) {
         src={heartImages[randomIndex].src}
         alt={heartImages[randomIndex].name}
         sizes="100px"
-        width={50}
-        height={50}
+        width={100}
+        height={100}
         className="heart object-contain"
         placeholder="blur"
         priority
