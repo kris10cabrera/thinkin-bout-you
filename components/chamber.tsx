@@ -1,7 +1,5 @@
 import Image, { type StaticImageData } from "next/image"
 import { useEffect, useState } from "react"
-
-import { positions } from "@/lib/utils"
 import AraucariaHeart from "../public/araucaria-heart.png"
 import BathroomHeart from "../public/bathroom-heart.png"
 // Static imports for all heart images
@@ -85,13 +83,44 @@ const heartImages: HeartImage[] = [
   { src: RaccoonHeart, name: "raccoon-heart.png" }
 ]
 
+function generateSporadicPositions(count: number, isMobile: boolean) {
+  const positions = []
+
+  for (let i = 0; i < count; i++) {
+    if (isMobile) {
+      positions.push({
+        xPos: 5 + Math.random() * 85, // 5-90% of screen width
+        yPos: 5 + Math.random() * 85, // 5-90% of screen height
+        rotation: Math.random() * 40 - 20, // Random rotation -20 to +20 degrees
+        scale: 0.5 + Math.random() * 0.8 // Random scaling between 0.5 and 1.3
+      })
+    } else {
+      positions.push({
+        xPos: 5 + Math.random() * 85,
+        yPos: 5 + Math.random() * 85,
+        rotation: Math.random() * 20 - 10, // Less rotation on desktop
+        scale: 0.7 + Math.random() * 0.6 // Random scaling between 0.7 and 1.3
+      })
+    }
+  }
+
+  return positions
+}
+
 export default function Chamber() {
   const [mounted, setMounted] = useState(false)
   const [shuffledHearts, setShuffledHearts] = useState<HeartImage[]>([])
   const [loadedCount, setLoadedCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+  const [sporadicPositions, setSporadicPositions] = useState<any[]>([])
 
   useEffect(() => {
+    // Check if on mobile
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
     const shuffleArray = <T,>(array: T[]): T[] => {
       const shuffled = [...array]
       for (let i = shuffled.length - 1; i > 0; i--) {
@@ -101,22 +130,45 @@ export default function Chamber() {
       return shuffled
     }
 
+    // Initial checks
+    checkIsMobile()
     setMounted(true)
-    setShuffledHearts(shuffleArray(heartImages))
 
-    // Set loading state to false after a short delay if images are taking too long
+    // Shuffle hearts
+    const shuffled = shuffleArray(heartImages)
+    setShuffledHearts(shuffled)
+
+    // Generate positions based on device type
+    const newPositions = generateSporadicPositions(
+      heartImages.length,
+      window.innerWidth < 768
+    )
+    setSporadicPositions(newPositions)
+
+    const handleResize = () => {
+      checkIsMobile()
+      setSporadicPositions(
+        generateSporadicPositions(heartImages.length, window.innerWidth < 768)
+      )
+    }
+
+    // Add resize listener
+    window.addEventListener("resize", handleResize)
+
     const timer = setTimeout(() => {
       setIsLoading(false)
     }, 3000)
 
-    return () => clearTimeout(timer)
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener("resize", handleResize)
+    }
   }, [])
 
-  // Track image loading progress
   const handleImageLoad = () => {
     setLoadedCount((prev) => {
       const newCount = prev + 1
-      // Set loading to false when all images are loaded
+
       if (newCount >= heartImages.length) {
         setIsLoading(false)
       }
@@ -130,9 +182,8 @@ export default function Chamber() {
 
   return (
     <div className="inset-0 h-full w-full">
-      {/* Loading overlay - appears during loading */}
       {isLoading && (
-        <div className=" inset-0 z-10 flex items-center justify-center bg-background/80">
+        <div className="inset-0 z-10 flex items-center justify-center bg-background/80">
           <div className="text-center">
             <div className="mb-2 h-6 w-6 animate-spin rounded-full border-b-2 border-primary" />
             <p className="text-muted-foreground">
@@ -144,26 +195,30 @@ export default function Chamber() {
         </div>
       )}
 
-      <div className="heartheart flex h-full w-full flex-row flex-wrap">
+      <div className="heartheart relative h-full w-full">
         {shuffledHearts.map((image, index) => (
           <div
             key={image.name}
+            className={`transform ${isMobile ? "mb-4" : ""}`}
             style={{
               position: "absolute",
-              left: `${positions[index].xPos}%`,
-              top: `${positions[index].yPos}%`,
-              transform: "translate(-50%, -50%)",
+              left: `${sporadicPositions[index]?.xPos ?? 0}%`,
+              top: `${sporadicPositions[index]?.yPos ?? 0}%`,
+              zIndex: sporadicPositions[index]?.zIndex ?? 0,
+              transform: `rotate(${sporadicPositions[index]?.rotation ?? 0}deg)`,
               opacity: isLoading ? 0 : 1,
-              transition: `opacity 0.5s ease-in-out ${Math.min(index * 50, 1000)}ms`,
-              willChange: "opacity"
+              transition: `opacity 0.5s ease-in-out ${Math.min(index * 50, 1000)}ms, transform 0.3s ease-in-out`,
+              willChange: "opacity, transform"
             }}
           >
-            <div className="relative size-[800px]">
+            <div
+              className={`relative ${isMobile ? "size-[80px] md:size-[120px]" : "size-[100px] lg:size-[180px]"}`}
+            >
               <Image
                 src={image.src}
                 alt={image.name.replace("-heart.png", "")}
                 fill
-                sizes="(max-width: 768px) 100vw, 400px"
+                sizes={isMobile ? "80px" : "(max-width: 768px) 100px, 180px"}
                 className="heart object-contain"
                 placeholder="blur"
                 priority={index < 8} // Mark first 8 images as priority
