@@ -20,6 +20,7 @@ export const publicClient = createPublicClient({
 
 const queryClient = new QueryClient()
 export default function Providers({ children }: { children: React.ReactNode }) {
+  console.log(process.env.NEXT_PUBLIC_ALCHEMY_API_KEY)
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
