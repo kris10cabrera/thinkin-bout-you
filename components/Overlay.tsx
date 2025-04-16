@@ -5,7 +5,7 @@ export default function Overlay() {
         {`
           @keyframes fadeIn {
             0% { opacity: 1; }
-            100% { opacity: 0; }
+            100% { opacity: 0.2; }
           }
         `}
       </style>
