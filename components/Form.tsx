@@ -89,7 +89,7 @@ export default function Form() {
   }
 
   return (
-    <div className="flex flex-col gap-2 items-start z-50 relative text-3xl ">
+    <div className="flex flex-col gap-2 items-start z-50 relative text-base lg:text-3xl ">
       {showThankYou ? (
         <div className="inline-flex flex-col items-center justify-center gap-2 text-black border border-black backdrop-blur-sm relative mt-30 z-40 rounded-lg p-4 text-center animate-fade-out">
           <span className="font-bold text-xl">
@@ -98,7 +98,7 @@ export default function Form() {
         </div>
       ) : (
         <>
-          <section className="inline-flex flex-col items-start gap-2 text-black border border-black backdrop-blur-sm relative mt-30 z-40 rounded-lg p-2">
+          <section className="inline-flex flex-col items-start gap-2 text-black border border-white bg-gradient backdrop-blur-sm bg-[#ffffffa1] relative lg:mt-30 rounded-lg p-2">
             <span>
               <span className="italic block">submit your crush</span>
               <label htmlFor="initials">you + your crush's initials:</label>

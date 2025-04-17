@@ -5,7 +5,7 @@ export default function Overlay() {
         {`
           @keyframes fadeIn {
             0% { opacity: 1; }
-            100% { opacity: 0.2; }
+            100% { opacity: 0.3; }
           }
         `}
       </style>
@@ -13,11 +13,11 @@ export default function Overlay() {
         className={` 
           fixed 
           inset-0 
-          z-50 
+          z-[100] 
           pointer-events-none 
           bg-neutral-900/20 
           backdrop-blur-md
-          opacity-0
+          opacity-[0.3]
           transition-opacity
           duration-[5000s]
           animate-[fadeIn_5s]

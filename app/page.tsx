@@ -13,35 +13,34 @@ export default function Home() {
   const crushCount = crushCountData.data
 
   return (
-    <div className="font-kosugi-maru min-h-screen p-20  gap-16 text-black">
+    <div className="font-kosugi-maru min-h-screen p-6 lg:p-20  text-black">
       <main className="">
         <Overlay />
         <div className="text">
-          <div className="">
-            <h1 className="bg-gradient z-40 relative font-tram inline-block text-[20vw] pointer-events-none leading-none">
+          <div className="bg-[#ffffffa1] border-white border-4 mb-8">
+            <h1 className="bg-gradient z-40 relative font-tram inline-block text-[20vw] pointer-events-none leading-[.8]">
               are you in love?
             </h1>
-            <p className="bg-gradient z-40 relative leading-none text-[6vw] pt-3 max-w-[40ch]  pointer-events-none">
+            <p className="pl-2 text-base lg:text-4xl bg-gradient  z-40 relative leading-none text-[6vw] py-6 max-w-[40ch]  pointer-events-none">
               carve your names into this website to celebrate your love,
               forever.
             </p>
-            <p className="z-40  relative leading-none text-4xl skew-x-5 pl-3 pt-4 bg-gradient">
-              ( pretend you are carving your names in a tree )
+            <p className="z-40 pl-2  relative leading-none text-base lg:text-4xl bg-gradient">
+              (pretend you are carving your names in a tree)
             </p>
-            <p className="bg-gradient z-40 relative my-8 leading-none text-4xl max-w-[40ch]">
+            <p className="bg-gradient pl-2  border  border-black inline-block rounded  p-2 lg:p-3 z-40 relative my-8 leading-none lg:text-2xl">
               accepting 333 crushes total
             </p>{" "}
-            <p className="text-2xl mb-4 font-kosugiMari z-50 relative ">
-              {crushCount} crushes recorded
-            </p>
-            <p className="bg-gradient z-40 relative leading-none text-3xl max-w-[40ch] mb-8">
+            <p className="bg-gradient z-40 pl-2  relative leading-none  text-base lg:text-3xl max-w-[40ch] mb-8 pb-8">
               reminder that love is all around us! especially on this website
               (2025). xoxo!
             </p>
           </div>
         </div>
         <Form />
-
+        <p className="text-sm border border-dashed border-black bg-white inline-block px-1 mt-4 mb-4 font-kosugiMari z-50 relative ">
+          {crushCount} crushes recorded
+        </p>
         <div className="fixed top-0 right-0 left-0 bottom-0">
           <div className="inset-0 w-screen h-screen">
             <Chamber />
@@ -52,7 +51,7 @@ export default function Home() {
             <Crush index={index} key={index} crush={crush} />
           ))}
         </div>
-        <p className="bg-gradient z-40 relative leading-none text-3xl pt-32 max-w-[40ch]  pointer-events-none">
+        <p className="bg-[#ffffffdb] p-2 border-white border-4 z-40 relative leading-none text-base lg:text-3xl my-32 max-w-[40ch] pointer-events-none">
           dedicated to my abuela who cried the first time i showed her one of my
           websites.
         </p>

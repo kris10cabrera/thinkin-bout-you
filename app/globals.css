@@ -41,11 +41,5 @@ body {
 }
 
 .bg-gradient {
-  background: radial-gradient(#ffffffab 10%, transparent 68%);
-}
-
-.bg-gradient-outer {
-}
-
-.bg-initial {
+  background: radial-gradient(#ffffff 10%, transparent 68%);
 }

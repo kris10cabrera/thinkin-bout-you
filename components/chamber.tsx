@@ -1,13 +1,14 @@
 import Image, { type StaticImageData } from "next/image"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import AraucariaHeart from "../public/araucaria-heart.png"
 import BathroomHeart from "../public/bathroom-heart.png"
-// Static imports for all heart images
+
 import BeachHeart from "../public/beach-heart.png"
 import BerlinHeart from "../public/berlin-heart.png"
 import Berlin1Heart from "../public/berlin1-heart.png"
 import BouquetHeart from "../public/bouquet-heart.png"
 import BudapestHeart from "../public/budapest-heart.png"
+import ButterflyHeart from "../public/butterfly-heart.png"
 import CaiobaHeart from "../public/caioba-heart.png"
 import CapivaraHeart from "../public/capivara-heart.png"
 import CarHeart from "../public/car-heart.png"
@@ -27,6 +28,7 @@ import GreenHeart from "../public/green-heart.png"
 import GuiaHeart from "../public/guia-heart.png"
 import ItaloThaiHeart from "../public/italo-thai-heart.png"
 import LaHeart from "../public/la-heart.png"
+import MonkeysHeart from "../public/monkeys-heart.png"
 import NadabienHeart from "../public/nadabien-heart.png"
 import NavecerradaHeart from "../public/navecerrada-heart.png"
 import PhoneHeart from "../public/phone-heart.png"
@@ -36,6 +38,7 @@ import SpikyHeart from "../public/spiky-heart.png"
 import THeart from "../public/t-heart.png"
 import TreeHeart from "../public/tree-heart.png"
 import WindowHeart from "../public/window-heart.png"
+import WindowsHeart from "../public/windows-heart.png"
 import WoodsHeart from "../public/woods-heart.png"
 
 interface HeartImage {
@@ -43,18 +46,30 @@ interface HeartImage {
   name: string
 }
 
-// Create array of image objects with static imports
+interface Position {
+  xPos: number
+  yPos: number
+  rotation: number
+  scale: number
+}
+
 const heartImages: HeartImage[] = [
   { src: BeachHeart, name: "beach-heart.png" },
   { src: WoodsHeart, name: "woods-heart.png" },
   { src: Berlin1Heart, name: "berlin1-heart.png" },
   { src: BerlinHeart, name: "berlin-heart.png" },
   { src: BathroomHeart, name: "bathroom-heart.png" },
+  { src: ButterflyHeart, name: "butterfly-heart.png" },
+  { src: MonkeysHeart, name: "monkeys-heart.png" },
+  { src: WindowsHeart, name: "windows-heart.png" },
+  { src: LaHeart, name: "la-heart.png" },
+  { src: BouquetHeart, name: "bouquet-heart.png" },
+  { src: NadabienHeart, name: "nadabien-heart.png" },
+  { src: NavecerradaHeart, name: "navecerrada-heart.png" },
+  { src: GraffitiHeart, name: "graffiti-heart.png" },
   { src: CasaPedregalHeart, name: "casa-pedregal-heart.png" },
   { src: ConcreteHeart, name: "concrete-heart.png" },
   { src: GreenHeart, name: "green-heart.png" },
-  { src: NadabienHeart, name: "nadabien-heart.png" },
-  { src: NavecerradaHeart, name: "navecerrada-heart.png" },
   { src: ItaloThaiHeart, name: "italo-thai-heart.png" },
   { src: CloudHeart, name: "cloud-heart.png" },
   { src: FlanHeart, name: "flan-heart.png" },
@@ -62,10 +77,8 @@ const heartImages: HeartImage[] = [
   { src: CapivaraHeart, name: "capivara-heart.png" },
   { src: AraucariaHeart, name: "araucaria-heart.png" },
   { src: CaiobaHeart, name: "caioba-heart.png" },
-  { src: GraffitiHeart, name: "graffiti-heart.png" },
   { src: CuritibaHeart, name: "curitiba-heart.png" },
   { src: CopenhagenOperaHeart, name: "copenhagen-opera-heart.png" },
-  { src: BouquetHeart, name: "bouquet-heart.png" },
   { src: TreeHeart, name: "tree-heart.png" },
   { src: CarHeart, name: "car-heart.png" },
   { src: BudapestHeart, name: "budapest-heart.png" },
@@ -76,30 +89,39 @@ const heartImages: HeartImage[] = [
   { src: PhoneHeart, name: "phone-heart.png" },
   { src: CratesHeart, name: "crates-heart.png" },
   { src: WindowHeart, name: "window-heart.png" },
-  { src: LaHeart, name: "la-heart.png" },
   { src: THeart, name: "t-heart.png" },
   { src: PokemonHeart, name: "pokemon-heart.png" },
   { src: DominoHeart, name: "domino-heart.png" },
   { src: RaccoonHeart, name: "raccoon-heart.png" }
 ]
 
-function generateSporadicPositions(count: number, isMobile: boolean) {
-  const positions = []
+function generateSporadicPositions(
+  count: number,
+  isMobile: boolean,
+  seed = 1
+): Position[] {
+  const positions: Position[] = []
+  let seedValue = seed
+
+  const seededRandom = () => {
+    const x = Math.sin(seedValue++) * 10000
+    return x - Math.floor(x)
+  }
 
   for (let i = 0; i < count; i++) {
     if (isMobile) {
       positions.push({
-        xPos: 5 + Math.random() * 85, // 5-90% of screen width
-        yPos: 5 + Math.random() * 85, // 5-90% of screen height
-        rotation: Math.random() * 40 - 20, // Random rotation -20 to +20 degrees
-        scale: 0.5 + Math.random() * 0.8 // Random scaling between 0.5 and 1.3
+        xPos: 5 + seededRandom() * 85, // 5-90% of screen width
+        yPos: 5 + seededRandom() * 85, // 5-90% of screen height
+        rotation: seededRandom() * 40 - 20, // Random rotation -20 to +20 degrees
+        scale: 0.5 + seededRandom() * 0.8 // Random scaling between 0.5 and 1.3
       })
     } else {
       positions.push({
-        xPos: 5 + Math.random() * 85,
-        yPos: 5 + Math.random() * 85,
-        rotation: Math.random() * 20 - 10, // Less rotation on desktop
-        scale: 0.7 + Math.random() * 0.6 // Random scaling between 0.7 and 1.3
+        xPos: 5 + seededRandom() * 85,
+        yPos: 5 + seededRandom() * 85,
+        rotation: seededRandom() * 20 - 10, // Less rotation on desktop
+        scale: 0.7 + seededRandom() * 0.6 // Random scaling between 0.7 and 1.3
       })
     }
   }
@@ -107,74 +129,138 @@ function generateSporadicPositions(count: number, isMobile: boolean) {
   return positions
 }
 
+// Memoized shuffle function to avoid recreating the shuffle on every render
+function shuffleArray<T>(array: T[], seed = 1): T[] {
+  const shuffled = [...array]
+  let seedValue = seed
+
+  const seededRandom = () => {
+    const x = Math.sin(seedValue++) * 10000
+    return x - Math.floor(x)
+  }
+
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(seededRandom() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+
+  return shuffled
+}
+
+// Separate HeartImage component to prevent re-renders of all hearts
+function HeartImage({
+  image,
+  position,
+  isMobile,
+  isLoading,
+  index,
+  onLoad
+}: {
+  image: HeartImage
+  position: Position
+  isMobile: boolean
+  isLoading: boolean
+  index: number
+  onLoad: () => void
+}) {
+  return (
+    <div
+      className={`transform ${isMobile ? "mb-4" : ""}`}
+      style={{
+        position: "absolute",
+        left: `${position.xPos}%`,
+        top: `${position.yPos}%`,
+        transform: `rotate(${position.rotation}deg)`,
+        opacity: isLoading ? 0 : 1,
+        transition: `opacity 0.5s ease-in-out ${Math.min(index * 50, 1000)}ms, transform 0.3s ease-in-out`,
+        willChange: "opacity, transform"
+      }}
+    >
+      <div
+        className={`relative ${isMobile ? "size-[80px] md:size-[120px]" : "size-[100px] lg:size-[180px]"}`}
+      >
+        <Image
+          src={image.src}
+          alt={image.name.replace("-heart.png", "")}
+          fill
+          sizes={isMobile ? "80px" : "(max-width: 768px) 100px, 180px"}
+          className="heart object-contain"
+          placeholder="blur"
+          priority={index < 8} // Mark first 8 images as priority
+          onLoad={onLoad}
+          loading={index < 12 ? "eager" : "lazy"}
+        />
+      </div>
+    </div>
+  )
+}
+
 export default function Chamber() {
-  const [mounted, setMounted] = useState(false)
-  const [shuffledHearts, setShuffledHearts] = useState<HeartImage[]>([])
-  const [loadedCount, setLoadedCount] = useState(0)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isMobile, setIsMobile] = useState(false)
-  const [sporadicPositions, setSporadicPositions] = useState<any[]>([])
+  const [mounted, setMounted] = useState<boolean>(false)
+  const [loadedCount, setLoadedCount] = useState<number>(0)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isMobile, setIsMobile] = useState<boolean>(false)
+  const [seed] = useState<number>(() => Math.floor(Math.random() * 10000)) // Create a stable seed on first render
 
-  useEffect(() => {
-    // Check if on mobile
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
+  // Memoize the shuffled hearts to prevent re-shuffling on re-renders
+  const shuffledHearts = useMemo(() => {
+    return shuffleArray(heartImages, seed)
+  }, [seed])
 
-    const shuffleArray = <T,>(array: T[]): T[] => {
-      const shuffled = [...array]
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-      }
-      return shuffled
-    }
+  // Memoize the positions to prevent recalculation on re-renders
+  const sporadicPositions = useMemo(() => {
+    return generateSporadicPositions(heartImages.length, isMobile, seed)
+  }, [isMobile, seed])
 
-    // Initial checks
-    checkIsMobile()
-    setMounted(true)
-
-    // Shuffle hearts
-    const shuffled = shuffleArray(heartImages)
-    setShuffledHearts(shuffled)
-
-    // Generate positions based on device type
-    const newPositions = generateSporadicPositions(
-      heartImages.length,
-      window.innerWidth < 768
-    )
-    setSporadicPositions(newPositions)
-
-    const handleResize = () => {
-      checkIsMobile()
-      setSporadicPositions(
-        generateSporadicPositions(heartImages.length, window.innerWidth < 768)
-      )
-    }
-
-    // Add resize listener
-    window.addEventListener("resize", handleResize)
-
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
-
-    return () => {
-      clearTimeout(timer)
-      window.removeEventListener("resize", handleResize)
-    }
+  const checkIsMobile = useCallback(() => {
+    setIsMobile(window.innerWidth < 768)
   }, [])
 
-  const handleImageLoad = () => {
+  const handleImageLoad = useCallback(() => {
     setLoadedCount((prev) => {
       const newCount = prev + 1
-
       if (newCount >= heartImages.length) {
         setIsLoading(false)
       }
       return newCount
     })
-  }
+  }, [])
+
+  useEffect(() => {
+    // Set initial states and add event listeners
+    checkIsMobile()
+    setMounted(true)
+
+    // Force loading to finish after timeout (failsafe)
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 3000)
+
+    // Add resize listener with throttling to reduce the number of updates
+    let resizeTimeout: NodeJS.Timeout
+    const handleResize = () => {
+      clearTimeout(resizeTimeout)
+      resizeTimeout = setTimeout(() => {
+        checkIsMobile()
+      }, 150) // Throttle to 150ms
+    }
+
+    window.addEventListener("resize", handleResize)
+    window.addEventListener("visibilitychange", () => {
+      // Prevent recalculation when tab becomes visible again
+      // Only update if necessary based on size changes
+      if (document.visibilityState === "visible") {
+        checkIsMobile()
+      }
+    })
+
+    return () => {
+      clearTimeout(timer)
+      clearTimeout(resizeTimeout)
+      window.removeEventListener("resize", handleResize)
+      window.removeEventListener("visibilitychange", handleResize)
+    }
+  }, [checkIsMobile])
 
   if (!mounted) {
     return null
@@ -197,36 +283,15 @@ export default function Chamber() {
 
       <div className="heartheart relative h-full w-full">
         {shuffledHearts.map((image, index) => (
-          <div
+          <HeartImage
             key={image.name}
-            className={`transform ${isMobile ? "mb-4" : ""}`}
-            style={{
-              position: "absolute",
-              left: `${sporadicPositions[index]?.xPos ?? 0}%`,
-              top: `${sporadicPositions[index]?.yPos ?? 0}%`,
-              zIndex: sporadicPositions[index]?.zIndex ?? 0,
-              transform: `rotate(${sporadicPositions[index]?.rotation ?? 0}deg)`,
-              opacity: isLoading ? 0 : 1,
-              transition: `opacity 0.5s ease-in-out ${Math.min(index * 50, 1000)}ms, transform 0.3s ease-in-out`,
-              willChange: "opacity, transform"
-            }}
-          >
-            <div
-              className={`relative ${isMobile ? "size-[80px] md:size-[120px]" : "size-[100px] lg:size-[180px]"}`}
-            >
-              <Image
-                src={image.src}
-                alt={image.name.replace("-heart.png", "")}
-                fill
-                sizes={isMobile ? "80px" : "(max-width: 768px) 100px, 180px"}
-                className="heart object-contain"
-                placeholder="blur"
-                priority={index < 8} // Mark first 8 images as priority
-                onLoad={handleImageLoad}
-                loading={index < 12 ? "eager" : "lazy"}
-              />
-            </div>
-          </div>
+            image={image}
+            position={sporadicPositions[index]}
+            isMobile={isMobile}
+            isLoading={isLoading}
+            index={index}
+            onLoad={handleImageLoad}
+          />
         ))}
       </div>
     </div>
@@ -234,7 +299,11 @@ export default function Chamber() {
 }
 
 export function Heart({ className }: { className?: string }) {
-  const randomIndex = Math.floor(Math.random() * heartImages.length)
+  // Memoize the random index calculation to prevent recalculation on parent re-renders
+  const randomIndex = useMemo(
+    () => Math.floor(Math.random() * heartImages.length),
+    []
+  )
 
   return (
     <div className={className} style={{ position: "relative" }}>
