@@ -18,7 +18,7 @@ export default function Home() {
         <Overlay />
         <div className="text">
           <div className="bg-[#ffffffa1] border-white border-4 mb-8">
-            <h1 className="bg-gradient z-40 relative font-tram inline-block text-[20vw] pointer-events-none leading-[.8]">
+            <h1 className="bg-gradient z-40 relative font-tram inline-block text-[20vw] leading-[.8]">
               are you in love?
             </h1>
             <p className="pl-2 text-base lg:text-4xl bg-gradient  z-40 relative leading-none text-[6vw] py-6 max-w-[40ch]  pointer-events-none">
