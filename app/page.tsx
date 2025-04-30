@@ -21,7 +21,7 @@ export default function Home() {
             <h1 className="bg-gradient z-40 relative font-tram inline-block text-[20vw] leading-[.8]">
               are you in love?
             </h1>
-            <p className="pl-2 text-base lg:text-4xl bg-gradient  z-40 relative leading-none text-[6vw] py-6 max-w-[40ch]  pointer-events-none">
+            <p className="pl-2 text-base sm:text-6xl bg-gradient  z-40 relative leading-none text-[6vw] py-6 max-w-[40ch]  pointer-events-none">
               carve your names into this website to celebrate your love,
               forever.
             </p>
@@ -31,7 +31,7 @@ export default function Home() {
             <p className="bg-gradient pl-2  border  border-black inline-block rounded  p-2 lg:p-3 z-40 relative my-8 leading-none lg:text-2xl">
               accepting 333 crushes total
             </p>{" "}
-            <p className="bg-gradient z-40 pl-2  relative leading-none  text-base lg:text-3xl max-w-[40ch] mb-8 pb-8">
+            <p className="bg-gradient z-40 pl-2  relative leading-none  text-base lg:text-3xl max-w-[40ch] pb-8">
               reminder that love is all around us! especially on this website
               (2025). xoxo!
             </p>
@@ -51,10 +51,14 @@ export default function Home() {
             <Crush index={index} key={index} crush={crush} />
           ))}
         </div>
-        <p className="bg-[#ffffffdb] p-2 border-white border-4 z-40 relative leading-none text-base lg:text-3xl my-32 max-w-[40ch] pointer-events-none">
+        <div className="bg-[#ffffffdb] p-2 pointer-events-auto  border-white border-4 z-50 relative leading-none text-base lg:text-3xl my-32 max-w-[50ch] pointer-events-none">
           dedicated to my abuela who cried the first time i showed her one of my
           websites.
-        </p>
+          <div className="text-sm mt-2">
+            Design, code & smart contract by <a href="https://www.kris10cabrera.com/" target="_blank" rel="noreferrer" className="underline">kris10cabrera</a>. think of this website as a soft space, a digital tree.
+          </div>
+        </div>
+
         <PixelTrail pixelSize={16} pixelClassName="bg-light_pink" />
       </main>
     </div>

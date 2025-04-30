@@ -7,21 +7,37 @@ interface CrushProps {
 
 export default function Crush(props: CrushProps) {
   const { index, crush } = props
+
+  // Generate more random margin variations based on index
+  const getRandomMargin = () => {
+    // Use a hash-like approach for pseudo-randomness based on index
+    const random = Math.sin(index * 9999) * 10000;
+    const marginOptions = [
+      "mr-20",
+      "mr-32",
+      "mr-40",
+      "ml-16",
+      "ml-28",
+      "mx-12",
+      "ml-8 mr-24"
+    ];
+
+    // Select a margin option based on the hash
+    const selectedOption = marginOptions[Math.abs(Math.floor(random)) % marginOptions.length];
+    return selectedOption;
+  }
+
   return (
     <div
       key={index}
       className={cn(
-        index % 3 === 0 && "mr-40",
-        "relative z-30  bg-white/80 p-2 uppercase shadow-[0_0_20px_9px_white] rounded-md"
+        getRandomMargin(),
+        "relative z-30 bg-white/80 p-2 uppercase shadow-[0_0_20px_9px_white] rounded-md"
       )}
     >
-      <div className="absolute bg-[#000000]  text-white rounded px-1 text-xs left-0 top-0 bg-red">
-        #{index}
-      </div>
-
-      <span className="text-5xl md:text-9xl font-tram relative">
+      <span className="text-5xl md:text-7xl font-scorpius relative">
         {crush[0]}
-        <span className="text-4xl md:text-7xl">&</span>
+        <span className="text-5xl ">&</span>
         {crush[1]}
         <span className="text-sm font-kosugi-maru whitespace-nowrap">
           forever

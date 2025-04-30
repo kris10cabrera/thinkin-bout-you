@@ -98,10 +98,10 @@ export default function Form() {
         </div>
       ) : (
         <>
-          <section className="inline-flex flex-col items-start gap-2 text-black border border-white bg-gradient backdrop-blur-sm bg-[#ffffffa1] relative lg:mt-30 rounded-lg p-2">
+          <section className="inline-flex flex-col items-start gap-2 text-black bg-gradient backdrop-blur-sm bg-[#ffffffa1] relative lg:mt-30 rounded-lg p-2 max-w-[40ch] border border-dashed border-[#003fff]">
             <span>
               <span className="italic block">submit your crush</span>
-              <label htmlFor="initials">you + your crush's initials:</label>
+              <label htmlFor="initials" className="!leading-none text-xl">only 1 crush allowed per day per computer. you + your crush's initials:</label>
             </span>
             <div className="inline-flex flex-row gap-2">
               <input
