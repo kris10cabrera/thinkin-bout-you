@@ -11,8 +11,30 @@ export default function Form() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showThankYou, setShowThankYou] = useState(false)
   const [hideForm, setHideForm] = useState(false)
+  const [isRateLimited, setIsRateLimited] = useState(false)
 
   const queryClient = useQueryClient()
+
+  // Check for rate limiting on component mount
+  useEffect(() => {
+    checkRateLimit()
+  }, [])
+
+  const checkRateLimit = () => {
+    const submittedTimestamp = localStorage.getItem('crushSubmitted')
+
+    if (submittedTimestamp) {
+      // Check if the 24 hour period has expired
+      if (Number.parseInt(submittedTimestamp) > Date.now()) {
+        setIsRateLimited(true)
+        setError("Only 1 crush allowed per day per computer")
+      } else {
+        // Clear expired timestamp
+        localStorage.removeItem('crushSubmitted')
+        setIsRateLimited(false)
+      }
+    }
+  }
 
   const validateInitials = (value: string): boolean => {
     return /^[A-Za-z]{2}$/.test(value)
@@ -44,6 +66,13 @@ export default function Form() {
 
   const handleSubmit = async () => {
     setHasAttemptedSubmit(true)
+
+    // Check rate limiting first
+    if (isRateLimited) {
+      setError("Only 1 crush allowed per day per computer")
+      return
+    }
+
     if (!validateInitials(initials)) {
       setError("Enter 2 letters")
       return
@@ -69,6 +98,11 @@ export default function Form() {
           args: { _initials: bytes2Hex }
         })
       })
+
+      // Set rate limiting for 24 hours
+      const expirationTime = Date.now() + (24 * 60 * 60 * 1000)
+      localStorage.setItem('crushSubmitted', expirationTime.toString())
+      setIsRateLimited(true)
 
       const currentCrushes =
         queryClient.getQueryData<string[]>(["crushes"]) || []
@@ -112,7 +146,7 @@ export default function Form() {
                 placeholder="XX"
                 onChange={handleInitialsChange}
                 className="block focus-within:outline-none border border-black text-red rounded-lg uppercase p-[0.5] text-3xl tracking-widest w-12 text-center font-bold"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isRateLimited}
               />
 
               <div className="flex flex-row gap-2 items-center">
@@ -131,15 +165,15 @@ export default function Form() {
                 onClick={handleSubmit}
                 type="submit"
                 className="hover:scale-125 transition:transform duration-300 ease-in-out rotate-[30deg]"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isRateLimited}
               >
                 <Cupid1
-                  className={`size-8 rotate-30 ${isSubmitting ? "opacity-50" : ""}`}
+                  className={`size-8 rotate-30 ${(isSubmitting || isRateLimited) ? "opacity-50" : ""}`}
                 />
               </button>
             </div>
           </section>
-          {hasAttemptedSubmit && error && (
+          {(hasAttemptedSubmit || isRateLimited) && error && (
             <span className="text-red-600 mt-1 z-40 relative bg-white text-base">
               {error}
             </span>

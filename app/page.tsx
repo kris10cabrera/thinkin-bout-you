@@ -51,7 +51,7 @@ export default function Home() {
             <Crush index={index} key={index} crush={crush} />
           ))}
         </div>
-        <div className="bg-[#ffffffdb] p-2 pointer-events-auto  border-white border-4 z-50 relative leading-none text-base lg:text-3xl my-32 max-w-[50ch] pointer-events-none">
+        <div className="bg-[#ffffffdb] p-2 pointer-events-auto  border-white border-4 z-50 relative leading-none text-base lg:text-3xl my-32 max-w-[50ch]">
           dedicated to my abuela who cried the first time i showed her one of my
           websites.
           <div className="text-sm mt-2">
