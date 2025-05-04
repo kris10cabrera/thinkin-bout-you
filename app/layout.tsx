@@ -30,7 +30,7 @@ const goozette = localFont({
 export const metadata: Metadata = {
   title: "Are you in love?",
   description:
-    "carve your names into this website to celebrate your love, forever. (pretend you are carving your names in a tree). accepting 333 crushes total. "
+    "carve your names into this website to celebrate your love. (pretend you are carving your names in a tree).it's anonymous and forever. accepting 333 crushes total reminder that love is all around us! especially on this website (2025).xoxo!",
 }
 
 export default function RootLayout({
