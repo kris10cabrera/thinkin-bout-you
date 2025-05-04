@@ -41,5 +41,5 @@ body {
 }
 
 .bg-gradient {
-  background: #ffffff5e;
+  @apply bg-white/80 shadow-[0_0_20px_9px_white]
 }
