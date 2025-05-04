@@ -26,8 +26,7 @@ export default function Form() {
     if (submittedTimestamp) {
       // Check if the 24 hour period has expired
       if (Number.parseInt(submittedTimestamp) > Date.now()) {
-        setIsRateLimited(true)
-        setError("Only 1 crush allowed per day per computer")
+
       } else {
         // Clear expired timestamp
         localStorage.removeItem('crushSubmitted')
@@ -67,11 +66,7 @@ export default function Form() {
   const handleSubmit = async () => {
     setHasAttemptedSubmit(true)
 
-    // Check rate limiting first
-    if (isRateLimited) {
-      setError("Only 1 crush allowed per day per computer")
-      return
-    }
+
 
     if (!validateInitials(initials)) {
       setError("Enter 2 letters")
@@ -93,7 +88,7 @@ export default function Form() {
         body: JSON.stringify({
           projectId: "2c3cff3e-e3da-41d1-83d5-b1e9e6e425b8",
           contractAddress: "0x9B3249313741fa8599dfF15455AD2545c36543dB",
-          chainId: 84532,
+          chainId: 8453,
           functionSignature: "addCrush(bytes2 _initials)",
           args: { _initials: bytes2Hex }
         })
@@ -107,7 +102,7 @@ export default function Form() {
       const currentCrushes =
         queryClient.getQueryData<string[]>(["crushes"]) || []
       queryClient.setQueryData(["crushes"], [initials, ...currentCrushes])
-      queryClient.setQueryData(["crushCount"], (prevCount: number) => prevCount + 1)
+      queryClient.setQueryData(["crushCount"], (prevCount: number) => prevCount ?? 0 + 1)
 
       setInitials("")
       setShowThankYou(true)
@@ -147,7 +142,7 @@ export default function Form() {
                 placeholder="XX"
                 onChange={handleInitialsChange}
                 className="block focus-within:outline-none border border-black text-red rounded-lg uppercase p-[0.5] text-3xl tracking-widest w-12 text-center font-bold"
-                disabled={isSubmitting || isRateLimited}
+                disabled={isSubmitting}
               />
 
               <div className="flex flex-row gap-2 items-center">
@@ -166,15 +161,15 @@ export default function Form() {
                 onClick={handleSubmit}
                 type="submit"
                 className="hover:scale-125 transition:transform duration-300 ease-in-out rotate-[30deg]"
-                disabled={isSubmitting || isRateLimited}
+                disabled={isSubmitting}
               >
                 <Cupid1
-                  className={`size-8 rotate-30 ${(isSubmitting || isRateLimited) ? "opacity-50" : ""}`}
+                  className={`size-8 rotate-30 ${(isSubmitting) ? "opacity-50" : ""}`}
                 />
               </button>
             </div>
           </section>
-          {(hasAttemptedSubmit || isRateLimited) && error && (
+          {(hasAttemptedSubmit) && error && (
             <span className="text-red-600 mt-1 z-40 relative bg-white text-base">
               {error}
             </span>
