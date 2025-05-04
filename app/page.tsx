@@ -37,7 +37,7 @@ export default function Home() {
       </div>
       <Form />
       <p className="text-sm border border-dashed border-black bg-white inline-block px-1 mt-4 mb-4 font-kosugiMari z-50 relative ">
-        {crushCount} crushes recorded
+        {crushCount ?? 0} crushes recorded
       </p>
       <div className="fixed top-0 right-0 left-0 bottom-0">
         <div className="inset-0 w-screen h-screen">

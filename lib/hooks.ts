@@ -34,7 +34,7 @@ export function useDimensions(
   return dimensions
 }
 
-const CONTRACT_ADDRESS = "0x92ffa823b1C167285ee03593FEc67F0aD4dF0fFf"
+const CONTRACT_ADDRESS = "0x9B3249313741fa8599dfF15455AD2545c36543dB"
 
 export function useGetCrush() {
   return useQuery({

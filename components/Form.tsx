@@ -92,7 +92,7 @@ export default function Form() {
         },
         body: JSON.stringify({
           projectId: "2c3cff3e-e3da-41d1-83d5-b1e9e6e425b8",
-          contractAddress: "0x92ffa823b1C167285ee03593FEc67F0aD4dF0fFf",
+          contractAddress: "0x9B3249313741fa8599dfF15455AD2545c36543dB",
           chainId: 84532,
           functionSignature: "addCrush(bytes2 _initials)",
           args: { _initials: bytes2Hex }
@@ -107,6 +107,7 @@ export default function Form() {
       const currentCrushes =
         queryClient.getQueryData<string[]>(["crushes"]) || []
       queryClient.setQueryData(["crushes"], [initials, ...currentCrushes])
+      queryClient.setQueryData(["crushCount"], (prevCount: number) => prevCount + 1)
 
       setInitials("")
       setShowThankYou(true)
