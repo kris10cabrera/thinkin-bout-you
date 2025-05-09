@@ -32,7 +32,7 @@ export default function Crush(props: CrushProps) {
       key={index}
       className={cn(
         getRandomMargin(),
-        "relative z-30 bg-white/80 p-2 uppercase shadow-[0_0_20px_9px_white] rounded-md"
+        " bg-white/80 p-2 uppercase shadow-[0_0_20px_9px_white] rounded-md z-50 relative"
       )}
     >
       <span className="text-5xl md:text-7xl font-scorpius relative">
