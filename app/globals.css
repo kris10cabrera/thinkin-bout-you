@@ -18,6 +18,11 @@ body {
   background: radial-gradient(#ffffff5e 10%, transparent 100%);
   z-index: 1;
   position: relative;
+  max-width: 70%;
+  @media screen and (max-width: 768px) {
+    font-size: 1.5rem; 
+    max-width: unset;
+  }
 }
 
 @keyframes fadeScale {

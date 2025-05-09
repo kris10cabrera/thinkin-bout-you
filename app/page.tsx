@@ -19,7 +19,7 @@ export default function Home() {
     <main className="font-kosugi-maru min-h-screen p-6 lg:p-20 text-black">
       <Overlay />
       <div className="text">
-        <h1 className="font-tram inline-block text-[18vw] leading-[.8] bg-white/80 p-2 shadow-[0_0_20px_9px_white] rounded-md 
+        <h1 className="font-tram inline-block text-[28vw] lg:text-[14vw] leading-[.8] bg-white/80 p-2 shadow-[0_0_20px_9px_white] rounded-md 
         " >
           are you in love?
         </h1>
@@ -55,7 +55,7 @@ export default function Home() {
         dedicated to my abuela who cried the first time i showed her one of my
         websites.
       </div>
-      <div className="bg-white/80 border-white border-4 text-base mt-2  p-2 pointer-events-auto   z-50 relative">
+      <div className="bg-white/80 border-white border-4 text-base mt-2  p-2 pointer-events-auto z-50 relative w-fit">
         Each crush is recorded onchain. View the contract  <a href="https://basescan.org/address/0x9B3249313741fa8599dfF15455AD2545c36543dB" target="_blank" className="underline" rel="noreferrer" >here</a>.
         Design, code & smart contract by <a href="https://www.kris10cabrera.com/" target="_blank" rel="noreferrer" className="underline">kris10cabrera</a>.
       </div>
