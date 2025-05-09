@@ -41,12 +41,6 @@ export default function RootLayout({
   return (
     <Providers>
       <html lang="en">
-        <head>
-          <link rel="preload" as="image" href="/beach-heart.png" />
-          <link rel="preload" as="image" href="/woods-heart.png" />
-          <link rel="preload" as="image" href="/berlin1-heart.png" />
-          <link rel="preload" as="image" href="/berlin-heart.png" />
-        </head>
         <body
           className={`${scorpius.variable} ${tram.variable} ${kosugiMaru.variable} ${goozette.variable} antialiased`}
         >
