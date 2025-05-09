@@ -36,33 +36,24 @@ export function useDimensions(
 
 const CONTRACT_ADDRESS = "0x9B3249313741fa8599dfF15455AD2545c36543dB"
 
-export function useGetCrush() {
-  return useQuery({
-    queryKey: ["crush"],
-    queryFn: async () => {
-      const data = await readContract(publicClient, {
-        address: CONTRACT_ADDRESS,
-        abi,
-        functionName: "getCrush",
-        args: [BigInt(0)]
-      })
-      return data
-    }
-  })
-}
-
 export function useGetCrushCount() {
   return useQuery({
     queryKey: ["crushCount"],
     queryFn: async () => {
-      const data = await readContract(publicClient, {
-        address: CONTRACT_ADDRESS,
-        abi,
-        functionName: "getCrushCount",
-        args: []
-      })
-      return Number(data)
-    }
+      try {
+        const data = await readContract(publicClient, {
+          address: CONTRACT_ADDRESS as `0x${string}`,
+          abi,
+          functionName: "crushCount",
+          args: []
+        })
+        return Number(data)
+      } catch (error) {
+        console.error("Error fetching crush count:", error)
+        throw error
+      }
+    },
+    staleTime: 5 * 60 * 1000 // 5 mins
   })
 }
 
@@ -70,23 +61,37 @@ export function useGetCrushes() {
   return useQuery({
     queryKey: ["crushes"],
     queryFn: async () => {
-      const crushCount = await readContract(publicClient, {
-        address: CONTRACT_ADDRESS,
-        abi,
-        functionName: "getCrushCount",
-        args: []
-      })
-      const crushes = await Promise.all(
-        Array.from({ length: Number(crushCount) }, (_, index) =>
-          readContract(publicClient, {
-            address: CONTRACT_ADDRESS,
-            abi,
-            functionName: "getCrush",
-            args: [BigInt(index)]
-          })
-        )
-      )
-      return crushes.filter((crush) => crush !== "").reverse()
-    }
+      try {
+        const crushes = await readContract(publicClient, {
+          address: CONTRACT_ADDRESS as `0x${string}`,
+          abi,
+          functionName: "getCrushes",
+          args: [BigInt(1), BigInt(333)]
+        })
+
+        return Array.isArray(crushes)
+          ? crushes.filter((crush) => crush !== "").reverse()
+          : []
+      } catch (error) {
+        console.error("Error fetching crushes:", error)
+        throw error
+      }
+    },
+    staleTime: 5 * 60 * 1000 // 5 mins
   })
+}
+
+export function useRefreshCrushData() {
+  const crushCountQuery = useGetCrushCount()
+  const crushesQuery = useGetCrushes()
+
+  const refreshAll = () => {
+    crushCountQuery.refetch()
+    crushesQuery.refetch()
+  }
+
+  return {
+    refreshAll,
+    isRefreshing: crushCountQuery.isFetching || crushesQuery.isFetching
+  }
 }
