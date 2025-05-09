@@ -18,15 +18,14 @@ export default function Home() {
 
     <main className="font-kosugi-maru min-h-screen p-6 lg:p-20 text-black">
       <Overlay />
-      <h1 className="font-tram  text-[28vw] lg:text-[14vw] leading-[.8] flex flex-wrap gap-1 mb-8 
-        " >
+      <h1 className="font-tram text-[28vw] lg:text-[14vw] leading-[.8] flex flex-wrap gap-6 mb-8">
         <span className="z-[91]">are</span>
         <span className="z-[91]">you</span>
         <span className="z-[90]">in</span>
         <span className="z-[90]">love?</span>
       </h1>
       <div className="text">
-        <p className="text-base sm:text-5xl bg-gradient  z-40 relative leading-none text-[6vw] pb-6 max-w-[40ch]  pointer-events-none">
+        <p className="text-base sm:text-5xl bg-gradient z-40 relative leading-none text-[6vw] pb-6 max-w-[40ch]  pointer-events-none">
           carve your names into this website to celebrate
         </p>
         <p className="z-40 relative leading-none text-base lg:text-4xl bg-gradient">
