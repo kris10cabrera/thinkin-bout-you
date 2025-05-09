@@ -14,7 +14,7 @@ body {
 }
 
 h1 span {
-  @apply bg-[#e4e4e4] leading-[.9] rounded-md relative 
+  @apply bg-[#fff] leading-[.9] rounded-md relative 
 }
 
 .text {
