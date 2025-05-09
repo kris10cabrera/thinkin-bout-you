@@ -1,5 +1,5 @@
-import { useQueryClient } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
+import { useRefreshCrushData } from "@/lib/hooks"
+import { useCallback, useEffect, useState } from "react"
 import { padHex, stringToHex } from "viem"
 import Cupid1 from "./icons/Cupid1"
 
@@ -13,65 +13,81 @@ export default function Form() {
   const [hideForm, setHideForm] = useState(false)
   const [isRateLimited, setIsRateLimited] = useState(false)
 
-  const queryClient = useQueryClient()
+  const { refreshAll } = useRefreshCrushData();
 
-  // Check for rate limiting on component mount
   useEffect(() => {
-    checkRateLimit()
-  }, [])
+    function checkRateLimit() {
+      const submittedTimestamp = localStorage.getItem('crushSubmitted')
 
-  const checkRateLimit = () => {
-    const submittedTimestamp = localStorage.getItem('crushSubmitted')
+      if (submittedTimestamp) {
+        const expirationTime = Number.parseInt(submittedTimestamp)
 
-    if (submittedTimestamp) {
-      // Check if the 24 hour period has expired
-      if (Number.parseInt(submittedTimestamp) > Date.now()) {
-
+        if (expirationTime > Date.now()) {
+          // Still rate limited
+          setIsRateLimited(true)
+        } else {
+          // Clear expired timestamp
+          localStorage.removeItem('crushSubmitted')
+          setIsRateLimited(false)
+        }
       } else {
-        // Clear expired timestamp
-        localStorage.removeItem('crushSubmitted')
         setIsRateLimited(false)
       }
     }
-  }
+    checkRateLimit()
 
-  const validateInitials = (value: string): boolean => {
-    return /^[A-Za-z]{2}$/.test(value)
-  }
 
-  const handleInitialsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const interval = setInterval(checkRateLimit, 60000) // Check every min
+    return () => clearInterval(interval)
+  }, [])
+
+
+  function handleInitialsChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value.toUpperCase()
     setInitials(value)
 
-    if (hasAttemptedSubmit && validateInitials(value)) {
-      setError("")
+    if (hasAttemptedSubmit) {
+      const isValid = /^[A-Za-z]{2}$/.test(value)
+      if (isValid) {
+        setError("")
+      }
     }
   }
 
   useEffect(() => {
     let hideTimer: NodeJS.Timeout
+    let refreshTimer: NodeJS.Timeout
 
     if (showThankYou) {
-      // Set timer to hide the form after 5 seconds
       hideTimer = setTimeout(() => {
         setHideForm(true)
+      }, 5000)
+
+      refreshTimer = setTimeout(() => {
+        refreshAll()
       }, 5000)
     }
 
     return () => {
       clearTimeout(hideTimer)
+      clearTimeout(refreshTimer)
     }
-  }, [showThankYou])
+  }, [showThankYou, refreshAll])
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     setHasAttemptedSubmit(true)
 
+    if (isRateLimited) {
+      return
+    }
 
+    const isValidInitials = /^[A-Za-z]{2}$/.test(initials)
 
-    if (!validateInitials(initials)) {
+    if (!isValidInitials) {
       setError("Enter 2 letters")
       return
     }
+
     if (honeypot) return
 
     setIsSubmitting(true)
@@ -94,15 +110,10 @@ export default function Form() {
         })
       })
 
-      // Set rate limiting for 24 hours
-      const expirationTime = Date.now() + (24 * 60 * 60 * 1000)
+      // Set rate limiting for 1 hour
+      const expirationTime = Date.now() + (60 * 60 * 1000)
       localStorage.setItem('crushSubmitted', expirationTime.toString())
       setIsRateLimited(true)
-
-      const currentCrushes =
-        queryClient.getQueryData<string[]>(["crushes"]) || []
-      queryClient.setQueryData(["crushes"], [initials, ...currentCrushes])
-      queryClient.setQueryData(["crushCount"], (prevCount: number) => prevCount ?? 0 + 1)
 
       setInitials("")
       setShowThankYou(true)
@@ -112,26 +123,45 @@ export default function Form() {
     } finally {
       setIsSubmitting(false)
     }
-  }
+  }, [
+    initials,
+    honeypot,
+    isRateLimited,
+
+  ])
 
   if (hideForm) {
     return null
   }
 
+
+  if (isRateLimited) {
+    return (
+      <div className="flex flex-col gap-2 items-start z-50 relative text-sm">
+        <section className="inline-flex flex-col items-center gap-2 text-black bg-gradient backdrop-blur-sm bg-[#ffffffa1] relative lg:mt-30 rounded-lg p-4 border border-dashed border-[#003fff]">
+          <span className="text-center w-full leading-none">
+            You may submit another crush in 1 hour
+          </span>
+        </section>
+      </div>
+    );
+  }
+
+
   return (
     <div className="flex flex-col gap-2 items-start z-50 relative text-base lg:text-3xl ">
       {showThankYou ? (
-        <div className="inline-flex flex-col items-center justify-center gap-2 text-black border border-black backdrop-blur-sm relative mt-30 z-40 rounded-lg p-4 text-center animate-fade-out">
+        <div className="inline-flex flex-col items-center justify-center gap-2 text-black bg-white/80 border-white border backdrop-blur-sm relative mt-30 z-40 rounded-lg p-4 text-center animate-fade-out">
           <span className="font-bold text-xl">
-            THANKS FOR YOUR SUBMISSION, your crush is now live{" "}
+            THANKS FOR YOUR SUBMISSION, your crush will be live in a moment
           </span>
         </div>
       ) : (
         <>
           <section className="inline-flex flex-col items-start gap-2 text-black bg-gradient backdrop-blur-sm bg-[#ffffffa1] relative lg:mt-30 rounded-lg p-2 max-w-[40ch] border border-dashed border-[#003fff]">
             <span>
-              <span className="italic block">submit your crush</span>
-              <label htmlFor="initials" className="!leading-none text-xl">only 1 crush allowed per day per computer. you + your crush's initials:</label>
+              <span className="italic block text-xl">submit your crush</span>
+              <label htmlFor="initials" className="text-[13px] !leading-none ">only 1 crush allowed per hour per computer. <br /> you + your crush's initials:</label>
             </span>
             <div className="inline-flex flex-row gap-2">
               <input
@@ -164,12 +194,12 @@ export default function Form() {
                 disabled={isSubmitting}
               >
                 <Cupid1
-                  className={`size-8 rotate-30 ${(isSubmitting) ? "opacity-50" : ""}`}
+                  className={`size-8 rotate-30 ${isSubmitting ? "opacity-50" : ""}`}
                 />
               </button>
             </div>
           </section>
-          {(hasAttemptedSubmit) && error && (
+          {hasAttemptedSubmit && error && (
             <span className="text-red-600 mt-1 z-40 relative bg-white text-base">
               {error}
             </span>
