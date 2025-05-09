@@ -161,7 +161,7 @@ export default function Form() {
           <section className="inline-flex flex-col items-start gap-2 text-black bg-gradient backdrop-blur-sm bg-[#ffffffa1] relative lg:mt-30 rounded-lg p-2 max-w-[40ch] border border-dashed border-[#003fff]">
             <span>
               <span className="italic block text-xl">submit your crush</span>
-              <label htmlFor="initials" className="text-[13px] !leading-none ">only 1 crush allowed per hour per computer. <br /> you + your crush's initials:</label>
+              <label htmlFor="initials" className="leading-none text-base">only 1 crush allowed per hour per computer. <br /> you + your crush's initials:</label>
             </span>
             <div className="inline-flex flex-row gap-2">
               <input

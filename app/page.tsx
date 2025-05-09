@@ -18,13 +18,16 @@ export default function Home() {
 
     <main className="font-kosugi-maru min-h-screen p-6 lg:p-20 text-black">
       <Overlay />
-      <div className="text">
-        <h1 className="font-tram inline-block text-[28vw] lg:text-[14vw] leading-[.8] bg-white/80 p-2 shadow-[0_0_20px_9px_white] rounded-md 
+      <h1 className="font-tram  text-[28vw] lg:text-[14vw] leading-[.8] flex flex-wrap gap-1 mb-8 
         " >
-          are you in love?
-        </h1>
-        <p className="text-base sm:text-6xl bg-gradient  z-40 relative leading-none text-[6vw] py-6 max-w-[40ch]  pointer-events-none">
-          carve your names into this website to celebrate your love.
+        <span className="z-[91]">are</span>
+        <span className="z-[91]">you</span>
+        <span className="z-[90]">in</span>
+        <span className="z-[90]">love?</span>
+      </h1>
+      <div className="text">
+        <p className="text-base sm:text-5xl bg-gradient  z-40 relative leading-none text-[6vw] pb-6 max-w-[40ch]  pointer-events-none">
+          carve your names into this website to celebrate
         </p>
         <p className="z-40 relative leading-none text-base lg:text-4xl bg-gradient">
           (pretend you are carving your names in a tree). it's anonymous and forever.
