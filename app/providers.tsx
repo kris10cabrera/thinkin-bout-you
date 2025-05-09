@@ -1,20 +1,22 @@
 "use client"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { createPublicClient } from "viem"
-import { baseSepolia } from "viem/chains"
-import { http, WagmiProvider, createConfig } from "wagmi"
+import { http, createPublicClient } from "viem"
+import { base } from "viem/chains"
+import { WagmiProvider, createConfig } from "wagmi"
 
 const config = createConfig({
-  chains: [baseSepolia],
+  chains: [base],
   transports: {
-    [baseSepolia.id]: http()
+    [base.id]: http(
+      `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+    )
   }
 })
 
 export const publicClient = createPublicClient({
-  chain: baseSepolia,
+  chain: base,
   transport: http(
-    `https://base-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+    `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
   )
 })
 
