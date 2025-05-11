@@ -1,3 +1,3 @@
 ### Thinking about you
 
-Next js app for website with that invites user to submit their crush. each crush is recorded on base smart contract. 333 crushes only
+website with that invites user to submit their crush. built with next.js, typescript, wagmi, viem, react-query, solidity, & fancy components. each crush is recorded [onchain via smart contract](https://basescan.org/address/0x9B3249313741fa8599dfF15455AD2545c36543dB) on Base.
