@@ -1,4 +1,4 @@
-export default function Cupid1({
+export default function Cupid({
   className = "current"
 }: { className?: string }) {
   return (

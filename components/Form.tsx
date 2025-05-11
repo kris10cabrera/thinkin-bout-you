@@ -1,7 +1,7 @@
 import { useRefreshCrushData } from "@/lib/hooks"
 import { useCallback, useEffect, useState } from "react"
 import { padHex, stringToHex } from "viem"
-import Cupid1 from "./icons/Cupid1"
+import Cupid from "./icons/Cupid"
 
 export default function Form() {
   const [initials, setInitials] = useState("")
@@ -187,7 +187,7 @@ export default function Form() {
                 className="hover:translate-x-1 transition:transform duration-200 ease-in-out rotate-[30deg]"
                 disabled={isSubmitting}
               >
-                <Cupid1
+                <Cupid
                   className={`size-8 rotate-30 ${isSubmitting ? "opacity-50" : ""}`}
                 />
               </button>
