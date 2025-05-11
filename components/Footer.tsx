@@ -5,7 +5,7 @@ export default function Footer() {
         dedicated to my abuela who cried the first time i showed her one of my
         websites.
       </div>
-      <div className="bg-white/80 border-white border-4 text-base mt-2  p-2 pointer-events-auto z-50 relative w-fit">
+      <div className="bg-white/80 leading-none border-white border-4 text-base mt-2  p-2 pointer-events-auto z-50 relative w-fit">
         Each crush is recorded onchain. View the contract{" "}
         <a
           href="https://basescan.org/address/0x9B3249313741fa8599dfF15455AD2545c36543dB"
