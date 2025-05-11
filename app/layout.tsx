@@ -22,15 +22,10 @@ const kosugiMaru = Kosugi_Maru({
   variable: "--font-kosugi-maru"
 })
 
-const goozette = localFont({
-  src: "./fonts/Goozette.woff",
-  variable: "--font-goozette"
-})
-
 export const metadata: Metadata = {
   title: "Are you in love?",
   description:
-    "carve your names into this website to celebrate your love. (pretend you are carving your names in a tree).it's anonymous and forever. accepting 333 crushes total reminder that love is all around us! especially on this website (2025).xoxo!",
+    "carve your names into this website to celebrate your love. (pretend you are carving your names in a tree).it's anonymous and forever. accepting 333 crushes total reminder that love is all around us! especially on this website (2025).xoxo!"
 }
 
 export default function RootLayout({
@@ -42,7 +37,7 @@ export default function RootLayout({
     <Providers>
       <html lang="en">
         <body
-          className={`${scorpius.variable} ${tram.variable} ${kosugiMaru.variable} ${goozette.variable} antialiased`}
+          className={`${scorpius.variable} ${tram.variable} ${kosugiMaru.variable}  antialiased`}
         >
           {children}
           <SpeedInsights />

@@ -13,11 +13,11 @@ export default function Form() {
   const [hideForm, setHideForm] = useState(false)
   const [isRateLimited, setIsRateLimited] = useState(false)
 
-  const { refreshAll } = useRefreshCrushData();
+  const { refreshAll } = useRefreshCrushData()
 
   useEffect(() => {
     function checkRateLimit() {
-      const submittedTimestamp = localStorage.getItem('crushSubmitted')
+      const submittedTimestamp = localStorage.getItem("crushSubmitted")
 
       if (submittedTimestamp) {
         const expirationTime = Number.parseInt(submittedTimestamp)
@@ -27,7 +27,7 @@ export default function Form() {
           setIsRateLimited(true)
         } else {
           // Clear expired timestamp
-          localStorage.removeItem('crushSubmitted')
+          localStorage.removeItem("crushSubmitted")
           setIsRateLimited(false)
         }
       } else {
@@ -36,11 +36,9 @@ export default function Form() {
     }
     checkRateLimit()
 
-
     const interval = setInterval(checkRateLimit, 60000) // Check every min
     return () => clearInterval(interval)
   }, [])
-
 
   function handleInitialsChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value.toUpperCase()
@@ -111,8 +109,8 @@ export default function Form() {
       })
 
       // Set rate limiting for 1 hour
-      const expirationTime = Date.now() + (60 * 60 * 1000)
-      localStorage.setItem('crushSubmitted', expirationTime.toString())
+      const expirationTime = Date.now() + 60 * 60 * 1000
+      localStorage.setItem("crushSubmitted", expirationTime.toString())
       setIsRateLimited(true)
 
       setInitials("")
@@ -123,47 +121,43 @@ export default function Form() {
     } finally {
       setIsSubmitting(false)
     }
-  }, [
-    initials,
-    honeypot,
-    isRateLimited,
-
-  ])
+  }, [initials, honeypot, isRateLimited])
 
   if (hideForm) {
     return null
   }
 
-
   if (isRateLimited) {
     return (
       <div className="flex flex-col gap-2 items-start z-50 relative text-sm">
-        <section className="inline-flex flex-col items-center gap-2 text-black bg-gradient backdrop-blur-sm bg-[#ffffffa1] relative lg:mt-30 rounded-lg p-4 border border-dashed border-[#003fff]">
+        <section className="inline-flex flex-col items-center gap-2 text-black bg-gradient backdrop-blur-sm bg-[#ffffffa1] relative lg:mt-30 rounded-lg p-4 border border-dashed bg-light_pink bg-gradient-pink ">
           <span className="text-center w-full leading-none">
             You may submit another crush in 1 hour
           </span>
         </section>
       </div>
-    );
+    )
   }
-
 
   return (
     <div className="flex flex-col gap-2 items-start z-50 relative text-base lg:text-3xl ">
       {showThankYou ? (
-        <div className="inline-flex flex-col items-center justify-center gap-2 text-black bg-white/80 border-white border backdrop-blur-sm relative mt-30 z-40 rounded-lg p-4 text-center animate-fade-out">
+        <div className="inline-flex flex-col items-center justify-center gap-2 text-black bg-light_pink bg-gradient-pink border backdrop-blur-sm relative mt-30 z-40 rounded-lg p-4 text-center animate-fade-out">
           <span className="font-bold text-xl">
             THANKS FOR YOUR SUBMISSION, your crush will be live in a moment
           </span>
         </div>
       ) : (
         <>
-          <section className="inline-flex flex-col items-start gap-2 text-black bg-gradient backdrop-blur-sm bg-[#ffffffa1] relative lg:mt-30 rounded-lg p-2 max-w-[40ch] border border-dashed border-[#003fff]">
+          <section className="inline-flex flex-col items-start gap-2 text-black backdrop-blur-sm bg-gradient-pink relative lg:mt-30 rounded-lg p-2 max-w-[40ch]  bg-light_pink">
             <span>
               <span className="italic block text-xl">submit your crush</span>
-              <label htmlFor="initials" className="leading-none text-base">only 1 crush allowed per hour per computer. <br /> you + your crush's initials:</label>
+              <label htmlFor="initials" className="leading-none text-base">
+                only 1 crush allowed per hour per computer. <br /> you + your
+                crush's initials:
+              </label>
             </span>
-            <div className="inline-flex flex-row gap-2">
+            <div className="inline-flex flex-row gap-2 border-black  border rounded-lg py-1.5 pl-1.5 pr-3 items-center justify-between">
               <input
                 id="initials"
                 type="text"
@@ -190,7 +184,7 @@ export default function Form() {
               <button
                 onClick={handleSubmit}
                 type="submit"
-                className="hover:scale-125 transition:transform duration-300 ease-in-out rotate-[30deg]"
+                className="hover:translate-x-1 transition:transform duration-200 ease-in-out rotate-[30deg]"
                 disabled={isSubmitting}
               >
                 <Cupid1
