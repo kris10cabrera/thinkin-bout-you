@@ -1,9 +1,9 @@
-import { useRefreshCrushData } from "@/lib/hooks"
+import { useGetCrushCount, useRefreshCrushData } from "@/lib/hooks"
 import { useCallback, useEffect, useState } from "react"
 import { padHex, stringToHex } from "viem"
 import Cupid from "./icons/Cupid"
 
-export default function Form({ isComplete }: { isComplete: boolean }) {
+export default function Form() {
   const [initials, setInitials] = useState("")
   const [error, setError] = useState("")
   const [honeypot, setHoneypot] = useState("")
@@ -14,6 +14,9 @@ export default function Form({ isComplete }: { isComplete: boolean }) {
   const [isRateLimited, setIsRateLimited] = useState(false)
 
   const { refreshAll } = useRefreshCrushData()
+  const crushCountData = useGetCrushCount()
+  const crushCount = crushCountData.data ?? 0
+  const isComplete = crushCount >= 333
 
   useEffect(() => {
     function checkRateLimit() {
