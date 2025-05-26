@@ -1,4 +1,4 @@
-import { useRefreshCrushData } from "@/lib/hooks"
+import { useGetCrushCount, useRefreshCrushData } from "@/lib/hooks"
 import { useCallback, useEffect, useState } from "react"
 import { padHex, stringToHex } from "viem"
 import Cupid from "./icons/Cupid"
@@ -14,6 +14,9 @@ export default function Form() {
   const [isRateLimited, setIsRateLimited] = useState(false)
 
   const { refreshAll } = useRefreshCrushData()
+  const crushCountData = useGetCrushCount()
+  const crushCount = crushCountData.data ?? 0
+  const isComplete = crushCount >= 333
 
   useEffect(() => {
     function checkRateLimit() {
@@ -125,6 +128,19 @@ export default function Form() {
 
   if (hideForm) {
     return null
+  }
+
+  if (isComplete) {
+    return (
+      <div className="flex flex-col gap-2 items-start z-50 relative text-sm">
+        <section className="inline-flex flex-col items-center gap-2 text-black bg-gradient backdrop-blur-sm bg-[#ffffffa1] relative lg:mt-30 rounded-lg p-4 border border-dashed bg-light_pink bg-gradient-pink ">
+          <span className="text-center w-full leading-none">
+            333 crushes were recorded from April 30 2025 to May 26 2025. <br />
+            No longer accepting submissions.
+          </span>
+        </section>
+      </div>
+    )
   }
 
   if (isRateLimited) {
