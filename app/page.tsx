@@ -19,7 +19,6 @@ export default function Home() {
       <Title />
       <Info />
       <Form />
-
       <div className="fixed top-0 right-0 left-0 bottom-0">
         <div className="inset-0 w-screen h-screen">
           <Chamber />
